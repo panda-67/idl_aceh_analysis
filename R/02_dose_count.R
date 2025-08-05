@@ -1,4 +1,4 @@
-# — Count doses per group
+# Count doses per group
 count_doses <- function(df, vaccine_groups) {
   library(dplyr)
   for (grp in names(vaccine_groups)) {

@@ -12,17 +12,37 @@ idl_summary <- function(df) {
 
 trend_data <- function(df) {
   df %>%
-    filter(!is.na(IDL_year)) %>%
-    count(IDL_year, idl_status) %>%
-    group_by(IDL_year) %>%
+    mutate(year_birth = format(as.Date(`Tanggal Lahir Anak`), "%Y")) %>%
+    filter(!is.na(year_birth)) %>%
+    group_by(year_birth, idl_status) %>%
+    summarise(n = n(), .groups = "drop") %>%
+    group_by(year_birth) %>%
     mutate(percent = n / sum(n) * 100)
 }
 
 dropoff_data <- function(df, required_vaccines) {
   df %>%
-    summarise(across(all_of(required_vaccines), ~ mean(!is.na(.)) * 100)) %>%
-    pivot_longer(everything(),
-      names_to = "Vaccine",
-      values_to = "CompletionRate"
-    )
+    summarise(
+      across(
+        all_of(required_vaccines),
+        .fns = list(
+          Completion = ~ mean(!is.na(.)) * 100,
+          Dropoff    = ~ mean(is.na(.)) * 100
+        ),
+        .names = "{col}_{fn}"
+      )
+    ) %>%
+    pivot_longer(
+      cols      = everything(),
+      names_to  = c("Vaccine", "Status"),
+      names_sep = "_",
+      values_to = "Rate"
+    ) %>%
+    pivot_wider(names_from = Status, values_from = Rate) %>%
+    arrange(Dropoff) %>% # ← order from least to most drop-off
+    pivot_longer(
+      cols = c(Completion, Dropoff), names_to = "Status",
+      values_to = "Rate"
+    ) %>%
+    mutate(Vaccine = factor(Vaccine, levels = unique(Vaccine)))
 }

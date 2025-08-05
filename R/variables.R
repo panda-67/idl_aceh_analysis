@@ -32,7 +32,7 @@ required_vaccines <- c(
 
 required_cols <- c(
   "Nama Anak", "Tanggal Lahir Anak", "Kecamatan",
-  required_vaccines,
+  as.character(unlist(vaccine_groups)),
   "HB0_doses", "BCG_doses", "OPV_doses", "IPV_doses",
   "DTP_HB_Hib_doses", "MR_doses",
   "region", "district", "treatment_duration", "kecamatan",

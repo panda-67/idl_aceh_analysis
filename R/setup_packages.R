@@ -1,4 +1,7 @@
-required <- c("readODS", "dplyr", "tidyr", "here", "ggplot2", "ggpubr")
+required <- c(
+  "readODS", "googlesheets4", "dplyr",
+  "tidyr", "purrr", "here", "ggplot2", "ggpubr"
+)
 
 lapply(required, function(pkg) {
   if (!require(pkg, character.only = TRUE)) {
