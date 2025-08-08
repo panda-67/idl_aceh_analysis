@@ -15,7 +15,7 @@ vaccine_groups <- list(
   HB0 = "HB-0",
   BCG = "BCG",
   OPV = c("OPV 1", "OPV 2", "OPV 3", "OPV 4"),
-  DTP_HB_Hib = c(
+  DTP = c(
     "DTP-HB-Hib 1", "DTP-HB-Hib 2", "DTP-HB-Hib 3", "DTP-HB-Hib 4"
   ),
   MR = c("MR 1", "MR 2"),
@@ -31,10 +31,10 @@ required_vaccines <- c(
 )
 
 required_cols <- c(
-  "Nama Anak", "Tanggal Lahir Anak", "Kecamatan",
+  "Nama Anak", "Kecamatan", "dob",
   as.character(unlist(vaccine_groups)),
   "HB0_doses", "BCG_doses", "OPV_doses", "IPV_doses",
-  "DTP_HB_Hib_doses", "MR_doses",
+  "DTP_doses", "MR_doses", "PCV_doses", "RV_doses",
   "region", "district", "treatment_duration", "kecamatan",
   "IDL_year", "idl_percent", "idl_status"
 )

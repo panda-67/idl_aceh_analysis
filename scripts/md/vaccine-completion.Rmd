@@ -1,0 +1,66 @@
+---
+title: "Vaccine Completion and Drop-off Analysis"
+author: "Samsul Muarrif"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: false
+    toc: true
+    number_sections: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(ggpubr)
+```
+
+## 📊 Overview
+
+This report summarizes completion status of various vaccine groups at the child
+level, and tests for disproportionality in vaccine drop-off using a Chi-square
+goodness-of-fit test.
+
+### 🧪 Chi-Square Test
+```{r chisq-test}
+chi_result <- chisq.test(x = observed_completion, p = expected_prop)
+```
+
+> **Chi-square statistic**: `r chi_result$statistic`
+
+> **Degrees of freedom**: `r chi_result$parameter`
+
+> **p-value**: `r format.pval(chi_result$p.value, digits = 4)`
+
+A significant result suggests disproportionate vaccine group completion, implying some groups suffer higher drop-off rates.
+
+### 📈 Vaccine Group Completion Plot
+Grafik ini menunjukkan proporsi anak yang menyelesaikan (atas) dan melewatkan (bawah) setiap kelompok vaksin. Vaksin HB0, BCG, dan OPV memiliki tingkat penyelesaian tertinggi, masing-masing sekitar 78%, 58%, dan 37%. Sebaliknya, kelompok vaksin seperti DTP, MR, RV, IPV, dan PCV hampir seluruhnya tidak diselesaikan, dengan tingkat miss mencapai hampir 100%. Artinya, sebagian besar anak hanya menerima imunisasi tahap awal, sementara cakupan untuk vaksin lanjutan dan kombinasi sangat rendah. Pola ini menandakan adanya penurunan tajam dalam kesinambungan vaksinasi dan potensi celah besar dalam perlindungan kekebalan populasi.
+```{r, echo=FALSE}
+print(p_chi_sq)
+```
+
+### Cakupan IDL Anak per Tahun Lahir dan Status
+Grafik ini menunjukkan tren cakupan imunisasi dasar lengkap (IDL) anak berdasarkan tahun lahir dan status kelengkapannya, yang dibagi menjadi tiga kategori: lengkap, sebagian, dan tidak. Secara umum, proporsi anak yang menerima vaksin secara lengkap sangat rendah setiap tahunnya, jauh dari target 90%. Sebagian besar anak hanya menerima sebagian vaksin, sementara proporsi anak yang sama sekali tidak divaksinasi justru meningkat tajam sejak 2018, bahkan mencapai lebih dari 60% pada 2023. Grafik ini mengungkapkan bahwa cakupan IDL masih sangat jauh dari ideal, dengan tren yang mengkhawatirkan dalam beberapa tahun terakhir.
+```{r, echo=FALSE}
+print(p_idl_trend)
+```
+
+### Vaccine Completion vs Drop-off
+Grafik ini membandingkan persentase anak yang menyelesaikan tiap jenis vaksin (biru) dengan yang mengalami drop-off atau tidak menyelesaikan (merah), diurutkan berdasarkan tingkat drop-off tertinggi. Vaksin dengan drop-off tertinggi adalah IPV 1 dan MR 1, yang hanya diselesaikan oleh sebagian kecil anak. Sebaliknya, vaksin HB-0 dan OPV 1 menunjukkan tingkat penyelesaian paling tinggi dan drop-off terendah. Grafik ini menyoroti tren bahwa semakin lanjut urutan vaksin dalam jadwal imunisasi, semakin besar kemungkinan anak tidak menyelesaikannya. Ini mencerminkan tantangan keberlanjutan dalam cakupan imunisasi, terutama untuk dosis lanjutan dan kombinasi vaksin.
+```{r, echo=FALSE}
+print(p_dropoff)
+```
+
+
+### 📌 Conclusion
+
+A Chi-square goodness-of-fit test revealed a highly significant discrepancy between expected and observed vaccine group completions, X²(`r chi_result$parameter`) = `r round(chi_result$statistic, 0)`, *p* `r format.pval(chi_result$p.value, digits = 4)`. This result indicates that vaccine completion rates differ substantially across groups, with disproportionately lower uptake observed in multi-dose and recently introduced vaccine series.
+There is compelling statistical evidence that vaccine completion rates are not equal across groups. Drop-off is especially visible in multi-dose or newer vaccines. This visualization helps target which groups may require more programmatic intervention or awareness efforts.

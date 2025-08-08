@@ -12,7 +12,7 @@ idl_summary <- function(df) {
 
 trend_data <- function(df) {
   df %>%
-    mutate(year_birth = format(as.Date(`Tanggal Lahir Anak`), "%Y")) %>%
+    mutate(year_birth = format(as.Date(dob), "%Y")) %>%
     filter(!is.na(year_birth)) %>%
     group_by(year_birth, idl_status) %>%
     summarise(n = n(), .groups = "drop") %>%
@@ -20,11 +20,11 @@ trend_data <- function(df) {
     mutate(percent = n / sum(n) * 100)
 }
 
-dropoff_data <- function(df, required_vaccines) {
+dropoff_data <- function(df, cols) {
   df %>%
     summarise(
       across(
-        all_of(required_vaccines),
+        all_of(cols),
         .fns = list(
           Completion = ~ mean(!is.na(.)) * 100,
           Dropoff    = ~ mean(is.na(.)) * 100

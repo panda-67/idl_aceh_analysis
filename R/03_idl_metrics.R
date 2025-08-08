@@ -9,12 +9,11 @@ idl_metrics <- function(df, required_vaccines) {
           (BCG_doses >= 1) +
           (OPV_doses >= 4) +
           (IPV_doses >= 1) +
-          (DTP_HB_Hib_doses >= 3) +
+          (DTP_doses >= 3) +
           (MR_doses >= 1)
       ) / 6 * 100,
       idl_status = case_when(
         idl_percent == 100 ~ "Lengkap",
-        idl_percent >= 50 ~ "Sebagian",
         TRUE ~ "Tidak"
       )
     )
