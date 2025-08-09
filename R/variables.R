@@ -24,10 +24,16 @@ vaccine_groups <- list(
   RV = c("RV 1", "RV 2", "RV 3")
 )
 
+vaccine_order <- c(
+  "HB-0", "BCG", "OPV 1", "DTP-HB-Hib 1", "OPV 2", "PCV 1", "RV 1",
+  "DTP-HB-Hib 2", "OPV 3", "PCV 2", "RV 2", "DTP-HB-Hib 3", "OPV 4", "PCV 3",
+  "RV 3", "MR 1", "IPV 1", "IPV 2", "DTP-HB-Hib 4", "MR 2"
+)
+
 required_vaccines <- c(
-  "HB-0", "BCG", "OPV 1", "OPV 2", "OPV 3", "OPV 4",
-  "IPV 1", "DTP-HB-Hib 1", "DTP-HB-Hib 2", "DTP-HB-Hib 3",
-  "MR 1"
+  "HB-0", "BCG", "OPV 1", "DTP-HB-Hib 1", "OPV 2",
+  "DTP-HB-Hib 2", "OPV 3", "DTP-HB-Hib 3", "OPV 4",
+  "MR 1", "IPV 1"
 )
 
 required_cols <- c(
