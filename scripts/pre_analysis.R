@@ -2,20 +2,22 @@
 library(here)
 
 # 1. Source utils
-source(here("R/setup_packages.R"))
+source(here("R/00_utils.R"))
 source(here("R/01_read_parse.R"))
 source(here("R/02_dose_count.R"))
 source(here("R/03_idl_metrics.R"))
 source(here("R/04_vaccine_trends.R"))
 source(here("R/05_idl_age_summary.R"))
-source(here("R/06_stats.R"))
+source(here("R/06_descriptive.R"))
+source(here("R/07_stats.R"))
 
 # 2. Source config
 source(here("R/variables.R"))
 path <- here("data", "dataset.ods")
 
 # 3. Build all_data
-all_data <- read_and_parse(path, sheets, vaccine_groups, extra_dates) %>%
+all_data <-
+  read_and_parse(path, sheets, vaccine_groups, extra_dates) %>%
   count_doses(vaccine_groups) %>%
   idl_metrics(required_vaccines) %>%
   mutate(
@@ -42,9 +44,8 @@ all_data <- read_and_parse(path, sheets, vaccine_groups, extra_dates) %>%
       as.Date(`HB-0`),
       as.Date(`Tanggal Lahir Anak`)
     )
-  )
-
-# 4. Trim to only needed columns
-all_data <- all_data %>% select(any_of(required_cols))
+  ) %>%
+  filter(as.Date(`HB-0`) >= as.Date(dob)) %>%
+  select(any_of(required_cols))
 
 write.csv(all_data, here("output", "tables", "all_data.csv"), row.names = FALSE)

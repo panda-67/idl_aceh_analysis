@@ -1,4 +1,37 @@
 library(dplyr)
+library(car) # Levene's test
+library(ARTool) # ART untuk nonparametrik
+library(lme4) # Mixed-effects
+library(lmerTest) # p-value untuk lmer
+library(emmeans) # Post-hoc
+
+# 1. Cek Asumsi Normalitas & Homogenitas
+# ----------------------------
+check_assumptions <- function(data) {
+  # Uji normalitas per kombinasi faktor
+  normality <- data %>%
+    group_by(region, district) %>%
+    summarise(
+      p_shapiro = tryCatch(
+        shapiro.test(idl_percent)$p.value,
+        error = function(e) NA_real_
+      ),
+      .groups = "drop"
+    )
+
+  # Levene's test untuk homogenitas varians
+  lev_p <- leveneTest(
+    idl_percent ~ region * district,
+    data = data
+  )$`Pr(>F)`[1]
+
+  list(
+    normality = normality,
+    normal_pass = all(normality$p_shapiro > 0.05, na.rm = TRUE),
+    levene_pass = lev_p > 0.05
+  )
+}
+
 
 run_vaccine_completion_chisq <- function(data,
                                          intended_cols,

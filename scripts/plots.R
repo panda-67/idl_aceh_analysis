@@ -1,5 +1,9 @@
 ## 0. by_group, 1. by_idl, 2. by_dose
-plots <- plot_vaccine_age(age_table)
+age_plots <- plot_vaccine_age(age_table)
+
+p_percent <- plot_percet(all_data)
+
+p_biner <- plot_biner(all_data)
 
 p_idl_trend <- ggplot(
   trend_data(all_data),

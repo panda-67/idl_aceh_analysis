@@ -12,10 +12,59 @@ write.csv(idl$summary, here("output", "tables", "idl_summary.csv"),
   row.names = FALSE
 )
 
+# ===>>>> HERE  <<<<===
 source(here("scripts/plots.R"))
 
 # 1. Statistical tests
-all_data[, c(endsWith(names(all_data), "_doses"))]
+names(all_data)
+all_data[, c(
+  "idl_status", names(all_data)[endsWith(names(all_data), "_doses")]
+)]
+
+all_data <- all_data %>% filter(kecamatan != "kbj")
+
+assump <- check_assumptions(all_data)
+print(assump$normality)
+
+# 2. Pilih Metode Analisis
+# ----------------------------
+if (assump$normal_pass && assump$levene_pass) {
+  cat("\n✅ Data memenuhi asumsi ANOVA\n")
+
+  df_aov <- all_data
+  mod <- aov(idl_percent ~ region * treatment_duration * district,
+    data = df_aov
+  )
+  print(summary(mod))
+
+  # Post-hoc untuk interaksi signifikan
+  emm <- emmeans(mod, ~ region * treatment_duration * district)
+  print(pairs(emm, adjust = "tukey"))
+} else {
+  cat("\n⚠ Data tidak memenuhi asumsi, pakai ART (nonparametrik)\n")
+
+  df_art <- all_data %>%
+    filter(kecamatan != "kbj") %>%
+    mutate(
+      region = factor(region, levels = c("VIV", "RC")),
+      district = factor(district, levels = c("Banda Aceh", "Aceh Besar")),
+      treatment_duration = factor(
+        treatment_duration,
+        levels = c("one_year", "two_year")
+      )
+    )
+
+  mod <- art(idl_percent ~ region * district, data = df_art)
+  print(anova(mod))
+
+  # Post-hoc nonparametrik
+  emm <- emmeans(artlm(mod, "region:district"), ~ region * district)
+  print(pairs(emm, adjust = "bonferroni"))
+}
+
+this
+# ====>>>> Lanjut binary <<<<====
+
 
 chi_test <- run_vaccine_completion_chisq(
   data = all_data,
@@ -65,16 +114,3 @@ p_chi_sq <- ggplot(vaccine_df, aes(
   ) +
   theme_pubclean() +
   theme(text = element_text(family = "Times", size = 10))
-
-p_chi_sq
-
-rmarkdown::render(
-  input = here("scripts/md/vaccine-completion.Rmd"),
-  output_dir = "reports/html"
-)
-
-rmarkdown::render(
-  input = here("scripts/md/vaccine-completion.Rmd"),
-  output_format = "pdf_document",
-  output_dir = "reports/pdf"
-)
