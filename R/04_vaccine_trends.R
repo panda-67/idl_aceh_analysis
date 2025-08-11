@@ -45,5 +45,32 @@ dropoff_data <- function(df, cols) {
       cols = c(Completion, Dropoff), names_to = "Status",
       values_to = "Rate"
     ) %>%
-    mutate(Vaccine = factor(Vaccine, levels = unique(Vaccine)))
+    mutate(Vaccine = factor(Vaccine, levels = vaccine_order))
+}
+
+chi_sq_data <- function(data, chi_test) {
+  vaccine_df <- tibble(
+    VaccineGroup = names(chi_test$observed_completion),
+    Completed = chi_test$observed_completion,
+    Missed = nrow(data) - chi_test$observed_completion
+  ) %>%
+    mutate(Total = Completed + Missed)
+
+  vaccine_order <- vaccine_df %>%
+    mutate(CompletedProp = Completed / Total) %>%
+    arrange(desc(CompletedProp)) %>%
+    pull(VaccineGroup)
+
+  vaccine_df <- vaccine_df %>%
+    pivot_longer(
+      cols = c("Completed", "Missed"),
+      names_to = "Status", values_to = "Count"
+    ) %>%
+    mutate(
+      Proportion = Count / Total * 100,
+      Status = factor(Status, levels = c("Completed", "Missed")),
+      VaccineGroup = factor(VaccineGroup, levels = vaccine_order)
+    )
+
+  vaccine_df
 }

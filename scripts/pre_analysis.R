@@ -9,7 +9,7 @@ source(here("R/03_idl_metrics.R"))
 source(here("R/04_vaccine_trends.R"))
 source(here("R/05_idl_age_summary.R"))
 source(here("R/06_descriptive.R"))
-source(here("R/07_stats.R"))
+source(here("R/07_inferial_stats.R"))
 
 # 2. Source config
 source(here("R/variables.R"))
@@ -47,5 +47,3 @@ all_data <-
   ) %>%
   filter(as.Date(`HB-0`) >= as.Date(dob)) %>%
   select(any_of(required_cols))
-
-write.csv(all_data, here("output", "tables", "all_data.csv"), row.names = FALSE)

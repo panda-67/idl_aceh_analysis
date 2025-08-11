@@ -1,66 +1,237 @@
 ---
-title: "Vaccine Completion and Drop-off Analysis"
-author: "Samsul Muarrif"
+title: "Laporan Imunisasi Dasar Lengkap (IDL)"
+subtitle: "Analisis Capaian & Tren Imunisasi Dasar Lengkap Banda Aceh & Aceh Besar"
+author: "Notivra (www.notivra.com)"
+email: "info@notivra.com"
+institution: "Notivra (www.notivra.com)"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
+# abstract: "Laporan ini menyajikan analisis capaian Imunisasi Dasar Lengkap (IDL) di Banda Aceh dan Aceh Besar berdasarkan data tahun 2017–2024. Analisis mencakup deskripsi distribusi cakupan IDL per wilayah dan jenis vaksin, tren tahunan, serta identifikasi perbedaan signifikan antar kelompok wilayah menggunakan uji Chi-Square. Hasil analisis ini bertujuan memberikan gambaran menyeluruh mengenai capaian program imunisasi, mengidentifikasi kesenjangan, dan menyediakan dasar ilmiah untuk perencanaan intervensi kesehatan masyarakat yang lebih efektif."
+lang: "id"
 output:
   html_document:
+    theme:
+      version: 4
+      bootswatch: flatly
+      primary: "#ff9800"    # bright sunshine orange
+      secondary: "#ffc107"  # warm yellow
     toc: true
     toc_float: true
-    theme: flatly
     highlight: tango
   pdf_document:
     latex_engine: xelatex
     keep_tex: false
+    df_print: kable
     toc: true
+    toc_depth: 3
     number_sections: true
     fig_caption: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-library(tidyverse)
-library(ggpubr)
 ```
 
-## 📊 Overview
+# Ringkasan
+Analisis capaian Imunisasi Dasar Lengkap (IDL) di Banda Aceh dan Aceh Besar (2017–2024) menunjukkan bahwa:
 
-This report summarizes completion status of various vaccine groups at the child
-level, and tests for disproportionality in vaccine drop-off using a Chi-square
-goodness-of-fit test.
+1. **Capaian antar jenis vaksin tidak merata** – vaksin awal seperti HB0 memiliki cakupan tinggi, namun vaksin lanjutan (DTP, MR, IPV) mengalami penurunan tajam (drop-off).
+2. **Banda Aceh unggul dibanding Aceh Besar** – rata-rata persentase capaian IDL lebih tinggi, terutama pada kelompok VIV.
+3. **Faktor district sangat berpengaruh** – uji Chi-Square menunjukkan perbedaan signifikan capaian lengkap antara Banda Aceh dan Aceh Besar (p < 0.001).
+4. **Efek perlakuan bergantung lokasi** – regresi logistik menunjukkan perlakuan VIV di Aceh Besar meningkatkan peluang lengkap, tetapi di Banda Aceh justru menurunkan secara signifikan.
+5. **Distribusi capaian antar vaksin tidak seimbang** – hasil Chi-Square per vaksin (p < 0.001) mengonfirmasi kesenjangan besar antara dosis awal dan akhir.
 
-### 🧪 Chi-Square Test
-```{r chisq-test}
-chi_result <- chisq.test(x = observed_completion, p = expected_prop)
+## Rekomendasi utama:
+
+- Fokus intervensi pada vaksin lanjutan untuk mengatasi drop-off.
+- Terapkan strategi spesifik per district, dengan prioritas peningkatan di Aceh Besar.
+- Perkuat pemantauan capaian IDL berbasis data untuk mendeteksi masalah secara dini.
+
+# Pembahasan
+Analisis capaian Imunisasi Dasar Lengkap (IDL) di Banda Aceh dan Aceh Besar periode 2017–2024 menunjukkan adanya variasi yang cukup jelas baik antar jenis vaksin maupun antar wilayah. Secara umum, capaian vaksin pada tahap awal seperti HB0 relatif tinggi, namun terjadi penurunan yang signifikan pada vaksin lanjutan seperti DTP, MR, dan IPV. Pola penurunan (drop-off) ini mengindikasikan adanya tantangan dalam mempertahankan kelengkapan imunisasi hingga tahap akhir, yang dapat disebabkan oleh faktor akses layanan, pengetahuan masyarakat, maupun keberlangsungan program distribusi vaksin.
+
+Analisis deskriptif berdasarkan kelompok vaksin dan total IDL memperlihatkan bahwa Banda Aceh cenderung memiliki rata-rata persentase capaian yang lebih tinggi dibanding Aceh Besar, terutama pada kelompok VIV. Uji perbedaan rata-rata menggunakan metode post-hoc Bonferroni dari model ART mengonfirmasi bahwa perbedaan ini signifikan secara statistik pada sebagian besar perbandingan kombinasi region(perlakuan) × district, menandakan adanya pengaruh faktor wilayah administratif terhadap capaian IDL.
+
+Namun, ketika dianalisis dalam bentuk biner (lengkap/tidak), faktor perlakuan secara tunggal tidak menunjukkan perbedaan signifikan (p = 0.694), sehingga jenis perlakuan (RC atau VIV) tidak cukup menentukan capaian IDL. Sebaliknya, faktor district memiliki pengaruh yang sangat signifikan (p < 2.2e-16), di mana Banda Aceh menunjukkan proporsi anak dengan IDL lengkap yang lebih tinggi dibanding Aceh Besar.
+
+Model regresi logistik memberikan gambaran lebih mendalam. Peluang anak memperoleh IDL lengkap cukup tinggi pada kondisi baseline (OR ≈ 7.44). Perlakuan VIV di Aceh Besar meningkatkan peluang capaian lengkap (OR ≈ 9.31) dibanding RC. Namun, di Banda Aceh, kombinasi VIV × district Banda Aceh justru menurunkan peluang capaian secara drastis (OR ≈ 0.0823). Hasil ini menegaskan bahwa efek perlakuan tidak bersifat seragam di seluruh district, sehingga interaksi keduanya harus dipertimbangkan dalam perencanaan program.
+
+Analisis Chi-Square terhadap capaian tiap vaksin memperlihatkan perbedaan distribusi yang sangat signifikan dari ekspektasi seimbang (X² = 17158, p < 2.2e-16). Capaian yang sangat tinggi pada vaksin awal dan rendah pada vaksin akhir menggarisbawahi pentingnya intervensi yang fokus pada mempertahankan kesinambungan imunisasi hingga dosis terakhir.
+
+Secara keseluruhan, hasil penelitian ini mengindikasikan bahwa:
+
+1. Faktor lokasi administratif (district) merupakan determinan utama capaian IDL.
+2. Efek perlakuan bersifat kontekstual dan dapat berbeda drastis tergantung district.
+3. Drop-off vaksin lanjutan merupakan masalah utama yang perlu diatasi melalui pendekatan layanan kesehatan yang berkelanjutan dan edukasi masyarakat.
+
+Temuan ini memberikan landasan bagi perencanaan intervensi imunisasi yang bersifat lokasi-spesifik dan dosis-tertarget, guna meningkatkan capaian IDL secara merata dan berkelanjutan di Banda Aceh dan Aceh Besar.
+
+# Analisa Deskriptif
+
+- Distribusi cakupan menunjukkan vaksin awal seperti HB0 biasanya memiliki cakupan lebih tinggi, sedangkan vaksin lanjutan seperti DTP atau MR cenderung lebih rendah.
+- Pola drop-off dari vaksin awal ke akhir mengindikasikan tantangan dalam menjaga kelengkapan jadwal imunisasi.
+- Perbedaan antar kelompok vaksin dapat mengarah pada evaluasi spesifik per jenis vaksin, bukan hanya IDL secara keseluruhan.
+
+## Deskriptif berdasarkan tiap vaksin
+```{r echo=FALSE}
+print(age_plots$by_dose)
 ```
 
-> **Chi-square statistic**: `r chi_result$statistic`
+## Deskriptif berdasarkan tiap kelompok vaksin
+```{r echo=FALSE}
+print(age_plots$by_group)
+```
 
-> **Degrees of freedom**: `r chi_result$parameter`
+## Deskriptif berdasarkan tiap vaksin IDL
+```{r echo=FALSE}
+print(age_plots$by_idl)
+```
 
-> **p-value**: `r format.pval(chi_result$p.value, digits = 4)`
+# Analisa Inferensial
+## Percent (Continuous)
 
-A significant result suggests disproportionate vaccine group completion, implying some groups suffer higher drop-off rates.
+- Data mean_percent menunjukkan bahwa Banda Aceh umumnya memiliki capaian IDL lebih tinggi dibanding Aceh Besar, khususnya pada kelompok VIV.
+- Hasil post-hoc Bonferroni memperlihatkan perbedaan signifikan pada hampir semua perbandingan (p < 0.001), kecuali VIV Banda Aceh vs RC Banda Aceh yang perbedaannya lebih kecil.
+- Ini berarti faktor region(perlakuan) × district memang mempengaruhi tingkat capaian persentase IDL.
 
-### 📈 Vaccine Group Completion Plot
-Grafik ini menunjukkan proporsi anak yang menyelesaikan (atas) dan melewatkan (bawah) setiap kelompok vaksin. Vaksin HB0, BCG, dan OPV memiliki tingkat penyelesaian tertinggi, masing-masing sekitar 78%, 58%, dan 37%. Sebaliknya, kelompok vaksin seperti DTP, MR, RV, IPV, dan PCV hampir seluruhnya tidak diselesaikan, dengan tingkat miss mencapai hampir 100%. Artinya, sebagian besar anak hanya menerima imunisasi tahap awal, sementara cakupan untuk vaksin lanjutan dan kombinasi sangat rendah. Pola ini menandakan adanya penurunan tajam dalam kesinambungan vaksinasi dan potensi celah besar dalam perlindungan kekebalan populasi.
-```{r, echo=FALSE}
+### Deskripsi Plot
+
+```{r echo=FALSE}
+print(p_percent$plot)
+```
+
+```{r echo=FALSE}
+print(p_percent$summary)
+```
+
+### Analisa
+
+Hasil uji ANOVA pada data persentase IDL yang telah ditransformasi dengan metode Aligned Rank Transform (ART) menunjukkan:
+
+- **Faktor perlakuan** berpengaruh signifikan terhadap capaian IDL (F = 52.129, p < 0.001), artinya terdapat perbedaan rata-rata persentase IDL antara region RC dan VIV.
+- **Faktor district** memiliki pengaruh yang sangat kuat (F = 511.451, p < 0.001), menunjukkan adanya perbedaan besar capaian IDL antara Banda Aceh dan Aceh Besar.
+- **Interaksi region/perlakuan × district** juga signifikan (F = 38.642, p < 0.001), yang berarti pengaruh region terhadap capaian IDL berbeda tergantung pada district-nya.
+
+```{r echo=FALSE}
+print(stat_cont$result)
+```
+
+Hasil ini merupakan **uji post-hoc** menggunakan metode *Bonferroni adjustment* dari model ART pada data persentase IDL. Setiap baris membandingkan perbedaan rata-rata *aligned ranks* antar kombinasi `region/perlakuan` dan `district`.  
+```{r echo=FALSE}
+print(stat_cont$post_hoc)
+```
+
+- **estimate**: selisih rata-rata
+- **SE**: *standard error*
+- **df**: derajat bebas
+- **t.ratio**: statistik uji
+- **p.value**: nilai signifikansi (*p-value*) setelah penyesuaian Bonferroni
+
+## Binary
+### Deskripsi Plot
+
+```{r echo=FALSE}
+print(p_biner$plot)
+```
+
+```{r echo=FALSE}
+print(p_biner$summary)
+```
+
+### Perlakuan
+Tidak ada perbedaan signifikan status lengkap/tidak antara perlakuan RC dan VIV (p = 0.694). Artinya, secara biner (lengkap/tidak), jenis perlakuan ini tidak cukup mempengaruhi capaian IDL.
+
+Hasil ini adalah uji asosiasi antara faktor perlakuan dan status IDL (Lengkap/Tidak) menggunakan Chi-square test (atau Fisher’s Exact jika ada cell < 5).
+
+1. **Test**: ringkasan uji statistik (X², df, p-value)
+```{r echo=FALSE}
+print(stat_biner$chi_region$test)
+```
+
+2. **Tabel**: tabel silang jumlah anak lengkap/tidak per perlakuan
+```{r echo=FALSE}
+print(stat_biner$chi_region$table)
+```
+
+### Lokasi
+Terdapat perbedaan signifikan besar antara Banda Aceh dan Aceh Besar (p < 2.2e-16). Banda Aceh memiliki proporsi anak lengkap lebih tinggi daripada Aceh Besar. Ini menunjukkan faktor lokasi administratif memiliki dampak kuat pada capaian IDL.
+
+Hasil ini adalah uji asosiasi antara district dan status IDL. Interpretasi sama seperti bagian Perlakuan, tetapi di sini faktor yang diuji adalah district.
+
+1. **Test**
+```{r echo=FALSE}
+print(stat_biner$chi_district$test)
+```
+2. **Tabel**
+```{r echo=FALSE}
+print(stat_biner$chi_district$table)
+```
+
+### Model
+Bagian ini menunjukkan model regresi logistik untuk memprediksi peluang status IDL lengkap berdasarkan perlakuan, district, dan interaksi keduanya.
+```{r echo=FALSE}
+print(stat_biner$logistic_model)
+```
+
+- **Estimate**: koefisien logit (positif → peluang meningkat; negatif → peluang menurun)
+- **Std. Error**: simpangan baku estimasi
+- **Pr(>|z|)**: signifikansi statistik
+- Interaksi signifikan berarti efek perlakuan berbeda tergantung district.
+
+### Ratio
+Bagian ini mengubah hasil regresi logistik menjadi Odds Ratio (OR) dengan interval kepercayaan 95%:
+```{r echo=FALSE}
+print(stat_biner$odds_ratio)
+```
+
+- **Intercept (OR ≈ 7.44)** → baseline peluang anak lengkap cukup tinggi.
+- **Perlakuan VIV (OR ≈ 9.31)** → di Aceh Besar, perlakuan VIV meningkatkan peluang lengkap dibanding RC.
+- **District Banda Aceh (OR ≈ 0.729)** → di RC, tinggal di Banda Aceh sedikit menurunkan peluang lengkap dibanding Aceh Besar.
+- **Interaksi PerlakuanVIV × Banda Aceh (OR ≈ 0.0823)** → efek VIV di Banda Aceh justru menurunkan peluang lengkap secara drastis.
+Interaksi ini sangat signifikan, menandakan bahwa efek perlakuan tidak konsisten di semua district.
+
+**OR > 1** → faktor meningkatkan peluang status lengkap, **OR < 1** → faktor menurunkan peluang status lengkap, **conf.low/conf.high**: batas bawah dan atas interval kepercayaan
+
+# Chi-Square
+
+- X² = 17158, p < 2.2e-16 → distribusi capaian per vaksin sangat berbeda dari ekspektasi seimbang.
+- Capaian vaksin awal (HB0) jauh lebih tinggi dibanding vaksin lanjutan (DTP, MR, IPV, dll).
+- Ini mengonfirmasi adanya drop-off kelengkapan pada tahap akhir imunisasi.
+
+## Deskripsi Plot
+```{r echo=FALSE}
 print(p_chi_sq)
 ```
 
-### Cakupan IDL Anak per Tahun Lahir dan Status
-Grafik ini menunjukkan tren cakupan imunisasi dasar lengkap (IDL) anak berdasarkan tahun lahir dan status kelengkapannya, yang dibagi menjadi tiga kategori: lengkap, sebagian, dan tidak. Secara umum, proporsi anak yang menerima vaksin secara lengkap sangat rendah setiap tahunnya, jauh dari target 90%. Sebagian besar anak hanya menerima sebagian vaksin, sementara proporsi anak yang sama sekali tidak divaksinasi justru meningkat tajam sejak 2018, bahkan mencapai lebih dari 60% pada 2023. Grafik ini mengungkapkan bahwa cakupan IDL masih sangat jauh dari ideal, dengan tren yang mengkhawatirkan dalam beberapa tahun terakhir.
-```{r, echo=FALSE}
-print(p_idl_trend)
+## Analisa
+```{r echo=FALSE}
+print(chi_test$chi_test)
 ```
 
-### Vaccine Completion vs Drop-off
-Grafik ini membandingkan persentase anak yang menyelesaikan tiap jenis vaksin (biru) dengan yang mengalami drop-off atau tidak menyelesaikan (merah), diurutkan berdasarkan tingkat drop-off tertinggi. Vaksin dengan drop-off tertinggi adalah IPV 1 dan MR 1, yang hanya diselesaikan oleh sebagian kecil anak. Sebaliknya, vaksin HB-0 dan OPV 1 menunjukkan tingkat penyelesaian paling tinggi dan drop-off terendah. Grafik ini menyoroti tren bahwa semakin lanjut urutan vaksin dalam jadwal imunisasi, semakin besar kemungkinan anak tidak menyelesaikannya. Ini mencerminkan tantangan keberlanjutan dalam cakupan imunisasi, terutama untuk dosis lanjutan dan kombinasi vaksin.
-```{r, echo=FALSE}
+**Observasi**
+```{r echo=FALSE}
+print(chi_test$observed_completion)
+```
+
+# Lain-lain
+## Drop-off
+
+Drop-off antar dosis menunjukkan bottleneck pada vaksin akhir, yang perlu ditelusuri apakah karena masalah logistik, pengetahuan orang tua, atau akses layanan.
+
+```{r echo=FALSE}
 print(p_dropoff)
 ```
 
+## IDL Trend
 
-### 📌 Conclusion
+Tren tahunan dapat mengidentifikasi periode penurunan tajam (misalnya selama pandemi) atau peningkatan akibat program intervensi.
 
-A Chi-square goodness-of-fit test revealed a highly significant discrepancy between expected and observed vaccine group completions, X²(`r chi_result$parameter`) = `r round(chi_result$statistic, 0)`, *p* `r format.pval(chi_result$p.value, digits = 4)`. This result indicates that vaccine completion rates differ substantially across groups, with disproportionately lower uptake observed in multi-dose and recently introduced vaccine series.
-There is compelling statistical evidence that vaccine completion rates are not equal across groups. Drop-off is especially visible in multi-dose or newer vaccines. This visualization helps target which groups may require more programmatic intervention or awareness efforts.
+```{r echo=FALSE}
+print(p_idl_trend)
+```
+
+# Kesimpulan
+
+- **Lokasi** (district) adalah faktor kunci yang mempengaruhi capaian IDL.
+- **Perlakuan** sendiri tidak signifikan pada analisis biner, tetapi interaksi region/perlakuan × district sangat penting pada model multivariat.
+- Vaksin akhir memiliki drop-off signifikan → fokus intervensi harus diarahkan ke tahap lanjutan imunisasi.
+- Data ini mendukung perencanaan program imunisasi yang **lokasi-spesifik** dan **dosis-tertarget**.

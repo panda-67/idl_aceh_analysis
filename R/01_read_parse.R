@@ -12,7 +12,7 @@ read_and_parse <- function(path, sheets, vaccine_groups, extra_dates = NULL) {
   date_pattern <- "^\\s*\\d{1,2}/\\d{1,2}/\\d{4}\\s*$"
   # 3. Relevant year of vaccined
   min_allowed_date <- as.Date("2017-01-01")
-  max_allowed_date <- as.Date("2023-12-31")
+  max_allowed_date <- as.Date("2024-12-31")
 
   ## main function
   map_dfr(

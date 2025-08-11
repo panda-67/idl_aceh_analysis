@@ -38,7 +38,8 @@ plot_vaccine_age <- function(vax_table) {
       x = "Age (Months)",
       y = "Count"
     ) +
-    theme_pubclean()
+    theme_pubclean() +
+    theme(text = element_text(family = "Times", size = 10))
 
   ##  Facet by idl_dose
   df_idl <- df_long %>%
@@ -52,7 +53,9 @@ plot_vaccine_age <- function(vax_table) {
       x = "Age (Months)",
       y = "Count"
     ) +
-    theme_pubclean()
+    theme_pubclean() +
+    theme(text = element_text(family = "Times", size = 10))
+
 
   ## 2️⃣ Facet by dose_name (no sum)
   p_dose <- ggplot(df_long, aes(x = age_months, y = count)) +
@@ -63,7 +66,8 @@ plot_vaccine_age <- function(vax_table) {
       x = "Age (Months)",
       y = "Count"
     ) +
-    theme_pubclean()
+    theme_pubclean() +
+    theme(text = element_text(family = "Times", size = 10))
 
   list(by_group = p_group, by_idl = p_idl, by_dose = p_dose)
 }
