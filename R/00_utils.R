@@ -10,6 +10,8 @@ lapply(required, function(pkg) {
   }
 })
 
+normalize_name <- function(x) gsub(" ", "_", x)
+
 render_report <- function(pdf = FALSE) {
   if (pdf) {
     rmarkdown::render(
@@ -17,6 +19,11 @@ render_report <- function(pdf = FALSE) {
       output_format = "pdf_document",
       output_dir = "reports/pdf"
     )
+    # rmarkdown::render(
+    #   input = here("scripts/md/vaccine-completion.Rmd"),
+    #   output_format = "word_document",
+    #   output_dir = "reports/doc"
+    # )
   }
 
   rmarkdown::render(

@@ -1,0 +1,78 @@
+---
+title: "Laporan Imunisasi Dasar Lengkap (IDL)"
+subtitle: "Analisis Capaian & Tren Imunisasi Dasar Aceh Besar"
+author: "Notivra (www.notivra.com)"
+email: "info@notivra.com"
+institution: "Notivra (www.notivra.com)"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+# abstract: "Laporan ini menyajikan analisis capaian Imunisasi Dasar Lengkap (IDL) di Banda Aceh dan Aceh Besar berdasarkan data tahun 2017–2024. Analisis mencakup deskripsi distribusi cakupan IDL per wilayah dan jenis vaksin, tren tahunan, serta identifikasi perbedaan signifikan antar kelompok wilayah menggunakan uji Chi-Square. Hasil analisis ini bertujuan memberikan gambaran menyeluruh mengenai capaian program imunisasi, mengidentifikasi kesenjangan, dan menyediakan dasar ilmiah untuk perencanaan intervensi kesehatan masyarakat yang lebih efektif."
+lang: "id"
+output:
+  html_document:
+    theme:
+      version: 4
+      bootswatch: flatly
+      primary: "#ff9800"    # bright sunshine orange
+      secondary: "#ffc107"  # warm yellow
+    toc: true
+    toc_float: true
+    highlight: tango
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: false
+    df_print: kable
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Ringkasan
+Analisis ini bertujuan untuk menggambarkan tren, distribusi, dan keterkaitan imunisasi berdasarkan data tahun 2019–2024. Fokus utama adalah pada cakupan vaksin, variasi antar wilayah, serta kecenderungan temporal yang dapat menunjukkan peningkatan atau penurunan capaian imunisasi. Hasil ini digunakan untuk mengidentifikasi pola, potensi masalah, dan dasar rekomendasi kebijakan.
+
+# Pembahasan
+Secara umum, cakupan imunisasi menunjukkan fluktuasi tahunan dengan pola berbeda antar vaksin dan wilayah. Beberapa vaksin mengalami tren meningkat stabil, sementara yang lain stagnan atau menurun. Variasi antar wilayah cukup besar, menandakan adanya kesenjangan pelayanan imunisasi.
+Hasil menunjukkan bahwa capaian imunisasi belum merata. Beberapa daerah berhasil mempertahankan tren positif, kemungkinan terkait dengan program intensifikasi atau dukungan logistik, sementara daerah lain masih tertinggal. Hal ini menegaskan perlunya pendekatan berbasis konteks lokal.
+Selain itu, vaksin tertentu lebih konsisten dicapai dibandingkan lainnya—indikasi perbedaan penerimaan masyarakat, distribusi, atau prioritas program.
+
+# Analisa Deskriptif
+
+- Pola drop-off dari vaksin awal ke akhir mengindikasikan tantangan dalam menjaga kelengkapan jadwal imunisasi.
+- Perbedaan antar kelompok vaksin dapat mengarah pada evaluasi spesifik per jenis vaksin, bukan hanya IDL secara keseluruhan.
+
+## Deskriptif berdasarkan tiap vaksin
+```{r echo=FALSE}
+print(age_plots$by_dose)
+```
+
+## Deskriptif berdasarkan tiap kelompok vaksin
+```{r echo=FALSE}
+print(age_plots$by_group)
+```
+
+## Deskriptif berdasarkan tiap vaksin IDL
+```{r echo=FALSE}
+print(age_plots$by_idl)
+```
+
+# Lain-lain
+## Drop-off
+
+Drop-off antar dosis menunjukkan bottleneck pada vaksin akhir, yang perlu ditelusuri apakah karena masalah logistik, pengetahuan orang tua, atau akses layanan.
+
+```{r echo=FALSE}
+print(p_dropoff)
+```
+
+## IDL Trend
+
+Tren tahunan dapat mengidentifikasi periode penurunan tajam (misalnya selama pandemi) atau peningkatan akibat program intervensi.
+
+```{r echo=FALSE}
+print(p_idl_trend)
+```
+
