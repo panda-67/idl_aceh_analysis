@@ -45,7 +45,7 @@ dropoff_data <- function(df, cols) {
       cols = c(Completion, Dropoff), names_to = "Status",
       values_to = "Rate"
     ) %>%
-    mutate(Vaccine = factor(Vaccine, levels = vaccine_order))
+    mutate(Vaccine = factor(Vaccine, levels = as.character(unlist(vaccine_groups))))
 }
 
 chi_sq_data <- function(data, chi_test) {

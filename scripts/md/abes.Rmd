@@ -32,12 +32,54 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 # Ringkasan
-Analisis ini bertujuan untuk menggambarkan tren, distribusi, dan keterkaitan imunisasi berdasarkan data tahun 2019–2024. Fokus utama adalah pada cakupan vaksin, variasi antar wilayah, serta kecenderungan temporal yang dapat menunjukkan peningkatan atau penurunan capaian imunisasi. Hasil ini digunakan untuk mengidentifikasi pola, potensi masalah, dan dasar rekomendasi kebijakan.
+Dari total **28.447** anak yang tercatat, hanya **7.443** anak yang pernah menerima vaksin, dan dari jumlah tersebut hanya **209** anak yang berhasil menyelesaikan **Imunisasi Dasar Lengkap (IDL)**. Angka ini setara dengan sekitar 0,7% dari seluruh populasi anak atau 2,8% dari anak yang sudah divaksin, menunjukkan bahwa meskipun sebagian anak sudah memulai imunisasi, mayoritas tidak menyelesaikan jadwal lengkapnya. Temuan ini menegaskan adanya masalah serius dalam kesinambungan layanan imunisasi, di mana tantangan bukan hanya memperluas cakupan agar lebih banyak anak divaksin, tetapi juga memastikan bahwa mereka yang memulai imunisasi benar-benar menuntaskan rangkaian IDL sesuai jadwal.
 
 # Pembahasan
 Secara umum, cakupan imunisasi menunjukkan fluktuasi tahunan dengan pola berbeda antar vaksin dan wilayah. Beberapa vaksin mengalami tren meningkat stabil, sementara yang lain stagnan atau menurun. Variasi antar wilayah cukup besar, menandakan adanya kesenjangan pelayanan imunisasi.
 Hasil menunjukkan bahwa capaian imunisasi belum merata. Beberapa daerah berhasil mempertahankan tren positif, kemungkinan terkait dengan program intensifikasi atau dukungan logistik, sementara daerah lain masih tertinggal. Hal ini menegaskan perlunya pendekatan berbasis konteks lokal.
 Selain itu, vaksin tertentu lebih konsisten dicapai dibandingkan lainnya—indikasi perbedaan penerimaan masyarakat, distribusi, atau prioritas program.
+
+# Hasil
+## Immunization Coverage (%) by Vaccine
+```{r echo=FALSE, fig.width=8.27, fig.height=5}
+print(p_coverage)
+```
+The analysis of immunization coverage reveals a striking imbalance in vaccine uptake. HB-0 (Hepatitis B at birth) stands out with the highest coverage at 26.2%, which is expected given that it is usually administered immediately after delivery in hospitals or clinics. Moderate levels are observed for BCG (12.5%), OPV-1 (16.3%), and other early OPV doses. However, coverage declines steadily with the DTP-HB-Hib series, falling from 8.8% for the first dose to 5.8% for the third, and dropping almost entirely to 0.7% for the fourth. Later-stage vaccines such as MR-1, IPV, PCV, RV, and MR-2 perform even worse, most registering below 5% and many falling under 1%. This sharp falloff highlights a pattern of strong initial uptake followed by weak continuation. Parents tend to bring their children for the early doses, but adherence to the full schedule deteriorates—likely due to gaps in access, awareness, or health service delivery. The implication is clear: while early birth and infant vaccines are prioritized, the immunization program struggles with follow-through. Targeted interventions must address these drop-offs, ensuring that children complete the full vaccine series rather than stopping after the first few doses.
+
+## Vaccine Coverage by Birth Year
+```{r echo=FALSE, fig.width=8.27, fig.height=10}
+print(p_cov_dob)
+```
+Tracks coverage trends from 2019–2024 for each vaccine. The split panel highlights which vaccines consistently fail to reach 50%. It reveals stagnation in multi-dose vaccines.
+
+## Age at Vaccination (Years) by Vaccine
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
+print(p_timelines)
+```
+Illustrates the actual timing of immunization compared to recommended schedules. Wide spreads mean many children receive vaccines late, risking susceptibility windows.
+
+## Full Immunization by Year
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
+print(p_fic_line)
+```
+The trend of full immunization coverage over time shows a fluctuating but overall fragile pattern. In 2019, the proportion of fully immunized children was slightly above 2%, but it dropped in 2020, likely reflecting disruptions during the early COVID-19 pandemic. Coverage then rebounded sharply in 2021 and peaked in 2022 at just above 3%, suggesting recovery efforts and renewed access to services. However, this improvement was not sustained. In 2023, coverage declined again, and by 2024 it plummeted close to zero, marking a dramatic collapse in full immunization completion. This trajectory indicates that while temporary interventions may have boosted coverage, structural challenges in sustaining vaccine adherence remain unresolved. The sharp fall in 2024 highlights urgent weaknesses in follow-through, access, or reporting, underscoring the need for consistent strategies that can withstand disruptions and ensure that gains in immunization are not only achieved but maintained.
+
+## Full Immunization Coverage by Region
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
+print(p_fic_region)
+```
+Strong disparities between subdistricts. A few (e.g., Baitussalam) show very low completion (<1%), while others perform better. This signals unequal health access and requires localized policy attention.
+```{r echo=FALSE}
+knitr::kable(df_fic_region, caption = "Full Immunization Coverage by Region")
+```
+
+## Distribution of Vaccines Received per Child
+```{r echo=FALSE, fig.width=8.27, fig.height=7.5}
+print(p_dist_vac)
+```
+Majority of children receive 8–9 vaccines, but only a small fraction complete the full schedule. The steep decline after the “core” vaccines reflects systemic drop-off.
+
+
 
 # Analisa Deskriptif
 
@@ -45,17 +87,17 @@ Selain itu, vaksin tertentu lebih konsisten dicapai dibandingkan lainnya—indik
 - Perbedaan antar kelompok vaksin dapat mengarah pada evaluasi spesifik per jenis vaksin, bukan hanya IDL secara keseluruhan.
 
 ## Deskriptif berdasarkan tiap vaksin
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=10.5}
 print(age_plots$by_dose)
 ```
 
 ## Deskriptif berdasarkan tiap kelompok vaksin
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=10.5}
 print(age_plots$by_group)
 ```
 
 ## Deskriptif berdasarkan tiap vaksin IDL
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=10.5}
 print(age_plots$by_idl)
 ```
 
@@ -64,7 +106,7 @@ print(age_plots$by_idl)
 
 Drop-off antar dosis menunjukkan bottleneck pada vaksin akhir, yang perlu ditelusuri apakah karena masalah logistik, pengetahuan orang tua, atau akses layanan.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
 print(p_dropoff)
 ```
 
@@ -72,7 +114,7 @@ print(p_dropoff)
 
 Tren tahunan dapat mengidentifikasi periode penurunan tajam (misalnya selama pandemi) atau peningkatan akibat program intervensi.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
 print(p_idl_trend)
 ```
 

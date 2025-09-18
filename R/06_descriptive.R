@@ -22,7 +22,10 @@ plot_vaccine_age <- function(vax_table) {
     filter(age_months <= 36) %>%
     mutate(
       age_months = as.numeric(age_months),
-      dose_name = factor(dose_name, levels = vaccine_order, ordered = TRUE)
+      dose_name = factor(
+        dose_name,
+        levels = as.character(unlist(vaccine_groups)), ordered = TRUE
+      )
     )
 
   ## 1️⃣ Facet by vaccine_group (sum over doses)
@@ -34,9 +37,13 @@ plot_vaccine_age <- function(vax_table) {
     geom_col(fill = "#2c7bb6") +
     facet_wrap(~vaccine_group, scales = "free_y", ncol = 2) +
     labs(
-      title = "Vaccination Counts by Group & Age (Months)",
-      x = "Age (Months)",
+      title = "Vaccination Counts by Group & Age (Years)",
+      x = "Age (Years)",
       y = "Count"
+    ) +
+    scale_x_continuous(
+      breaks = seq(0, max(df_group$age_months, na.rm = TRUE), by = 12),
+      labels = function(x) paste0(x / 12, " yr") # 👈 here
     ) +
     theme_pubclean() +
     theme(text = element_text(family = "Times", size = 10))
@@ -49,9 +56,13 @@ plot_vaccine_age <- function(vax_table) {
     geom_col(fill = "#d7891c") +
     facet_wrap(~dose_name, scales = "free_y", ncol = 3) +
     labs(
-      title = "Vaccination Counts by IDL Dose & Age (Months)",
-      x = "Age (Months)",
+      title = "Vaccination Counts by IDL Dose & Age (Years)",
+      x = "Age (Years)",
       y = "Count"
+    ) +
+    scale_x_continuous(
+      breaks = seq(0, max(df_group$age_months, na.rm = TRUE), by = 12),
+      labels = function(x) paste0(x / 12, " yr") # 👈 here
     ) +
     theme_pubclean() +
     theme(text = element_text(family = "Times", size = 10))
@@ -60,11 +71,15 @@ plot_vaccine_age <- function(vax_table) {
   ## 2️⃣ Facet by dose_name (no sum)
   p_dose <- ggplot(df_long, aes(x = age_months, y = count)) +
     geom_col(fill = "#d7191c") +
-    facet_wrap(~dose_name, scales = "free_y", ncol = 4) +
+    facet_wrap(~dose_name, scales = "free_y", ncol = 3) +
     labs(
-      title = "Vaccination Counts by Dose & Age (Months)",
-      x = "Age (Months)",
+      title = "Vaccination Counts by Dose & Age (Years)",
+      x = "Age (Years)",
       y = "Count"
+    ) +
+    scale_x_continuous(
+      breaks = seq(0, max(df_group$age_months, na.rm = TRUE), by = 12),
+      labels = function(x) paste0(x / 12, " yr") # 👈 here
     ) +
     theme_pubclean() +
     theme(text = element_text(family = "Times", size = 10))

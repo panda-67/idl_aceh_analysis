@@ -59,7 +59,11 @@ make_vaccine_age_table <- function(data, intend_cols, dob_col = "dob") {
         )]
         grp[1]
       }),
-      age_months = interval(.data[[dob_col]], date_given) %/% months(1)
+      age_months = interval(.data[[dob_col]], date_given) %/% months(1),
+      dose_name = factor(
+        dose_name,
+        levels = as.character(unlist(vaccine_groups)), ordered = TRUE
+      )
     ) %>%
     filter(age_months <= 60) %>%
     count(vaccine_group, dose_name, age_months) %>%
