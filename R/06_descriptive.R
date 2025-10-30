@@ -87,7 +87,7 @@ plot_vaccine_age <- function(vax_table) {
   list(by_group = p_group, by_idl = p_idl, by_dose = p_dose)
 }
 
-plot_percet <- function(data) {
+plot_percent <- function(data) {
   summary <- data %>%
     group_by(region, treatment_duration, district) %>%
     summarise(
@@ -98,20 +98,20 @@ plot_percet <- function(data) {
     )
   plot <- ggplot(
     summary,
-    aes(x = treatment_duration, y = mean_percent, fill = region)
+    aes(x = "", y = mean_percent, fill = region)
   ) +
     geom_col(position = position_dodge()) +
-    geom_errorbar(
-      aes(ymin = mean_percent - sd_percent, ymax = mean_percent + sd_percent),
-      position = position_dodge(width = 0.9),
-      width = 0.2
-    ) +
+    # geom_errorbar(
+    #   aes(ymin = mean_percent - sd_percent, ymax = mean_percent + sd_percent),
+    #   position = position_dodge(width = 0.9),
+    #   width = 0.2
+    # ) +
     facet_wrap(~district) +
     scale_x_discrete(labels = c(one_year = "1 Tahun", two_year = "2 Tahun")) +
     scale_fill_manual(name = "", values = c(VIV = "#1b9e77", RC = "#d95f02")) +
     labs(
       title = "Persentase IDL per Durasi & Region",
-      x = "Durasi Perlakuan",
+      x = "",
       y = "Persentase IDL (%)"
     ) +
     theme_pubclean() +
@@ -135,7 +135,7 @@ plot_biner <- function(data) {
 
   plot <- ggplot(
     summary,
-    aes(x = treatment_duration, y = lengkap_percent, fill = region)
+    aes(x = "", y = lengkap_percent, fill = region)
   ) +
     geom_col(position = position_dodge()) +
     facet_wrap(~district) +
@@ -143,7 +143,7 @@ plot_biner <- function(data) {
     scale_fill_manual(name = "", values = c(VIV = "#1b9e77", RC = "#d95f02")) +
     labs(
       title = "Proporsi Anak dengan IDL Lengkap",
-      x = "Durasi Perlakuan",
+      x = "",
       y = "Persentase Lengkap (%)"
     ) +
     theme_pubclean() +

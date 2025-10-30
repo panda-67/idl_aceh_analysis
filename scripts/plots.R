@@ -95,7 +95,7 @@ p_chi_sq <- ggplot(
 age_plots <- plot_vaccine_age(age_table)
 
 ## $summary, $plot
-p_percent <- plot_percet(all_data)
+p_percent <- plot_percent(all_data)
 
 ## $summary, $plot
 p_biner <- plot_biner(all_data)

@@ -1,7 +1,7 @@
 ---
 title: "Laporan Imunisasi Dasar Lengkap (IDL)"
 subtitle: "Analisis Capaian & Tren Imunisasi Dasar Lengkap Banda Aceh & Aceh Besar"
-author: "Notivra (www.notivra.com)"
+# author: "Notivra (www.notivra.com)"
 email: "info@notivra.com"
 institution: "Notivra (www.notivra.com)"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -40,7 +40,7 @@ Analisis capaian Imunisasi Dasar Lengkap (IDL) di Banda Aceh dan Aceh Besar (201
 4. **Efek perlakuan bergantung lokasi** – regresi logistik menunjukkan perlakuan VIV di Aceh Besar meningkatkan peluang lengkap, tetapi di Banda Aceh justru menurunkan secara signifikan.
 5. **Distribusi capaian antar vaksin tidak seimbang** – hasil Chi-Square per vaksin (p < 0.001) mengonfirmasi kesenjangan besar antara dosis awal dan akhir.
 
-## Rekomendasi utama:
+## Rekomendasi utama
 
 - Fokus intervensi pada vaksin lanjutan untuk mengatasi drop-off.
 - Terapkan strategi spesifik per district, dengan prioritas peningkatan di Aceh Besar.
@@ -72,17 +72,17 @@ Temuan ini memberikan landasan bagi perencanaan intervensi imunisasi yang bersif
 - Perbedaan antar kelompok vaksin dapat mengarah pada evaluasi spesifik per jenis vaksin, bukan hanya IDL secara keseluruhan.
 
 ## Deskriptif berdasarkan tiap vaksin
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=11}
 print(age_plots$by_dose)
 ```
 
 ## Deskriptif berdasarkan tiap kelompok vaksin
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
 print(age_plots$by_group)
 ```
 
 ## Deskriptif berdasarkan tiap vaksin IDL
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=8}
 print(age_plots$by_idl)
 ```
 
@@ -95,7 +95,7 @@ print(age_plots$by_idl)
 
 ### Deskripsi Plot
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=4, fig.height=6}
 print(p_percent$plot)
 ```
 
@@ -129,7 +129,7 @@ print(stat_cont$post_hoc)
 ## Binary
 ### Deskripsi Plot
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=4, fig.height=6}
 print(p_biner$plot)
 ```
 
@@ -198,7 +198,7 @@ Interaksi ini sangat signifikan, menandakan bahwa efek perlakuan tidak konsisten
 - Ini mengonfirmasi adanya drop-off kelengkapan pada tahap akhir imunisasi.
 
 ## Deskripsi Plot
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=10}
 print(p_chi_sq)
 ```
 
@@ -217,7 +217,7 @@ print(chi_test$observed_completion)
 
 Drop-off antar dosis menunjukkan bottleneck pada vaksin akhir, yang perlu ditelusuri apakah karena masalah logistik, pengetahuan orang tua, atau akses layanan.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=7}
 print(p_dropoff)
 ```
 
@@ -225,7 +225,7 @@ print(p_dropoff)
 
 Tren tahunan dapat mengidentifikasi periode penurunan tajam (misalnya selama pandemi) atau peningkatan akibat program intervensi.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=8.27, fig.height=10}
 print(p_idl_trend)
 ```
 

@@ -37,8 +37,8 @@ p_coverage <- ggplot(coverage_summary, aes(x = vaccine, y = coverage_rate)) +
   theme_pubclean()
 
 df_cov_by_year <- df_all %>%
-  mutate(birth_year = lubridate::year(`Tanggal Lahir Anak`)) %>%
-  group_by(birth_year) %>%
+  mutate(idl_year = lubridate::year(`Tanggal Lahir Anak`)) %>%
+  group_by(idl_year) %>%
   summarise(
     across(
       all_of(vaccine_order),
@@ -61,18 +61,18 @@ df_cov_long <- df_cov_by_year %>%
   )
 
 df_cov_long_complete <- df_cov_long %>%
-  complete(birth_year, vaccine, fill = list(coverage = 0)) %>%
+  complete(idl_year, vaccine, fill = list(coverage = 0)) %>%
   mutate(
     coverage_group = ifelse(coverage > 50, "Above 50%", "0–50%")
   )
 
 df_labels <- df_cov_long_complete %>%
   group_by(vaccine, coverage_group) %>%
-  slice_min(abs(birth_year - 2024)) %>%
+  slice_min(abs(idl_year - 2024)) %>%
   ungroup()
 
 library(ggrepel)
-p_cov_dob <- ggplot(df_cov_long_complete, aes(x = birth_year, y = coverage, color = vaccine)) +
+p_cov_dob <- ggplot(df_cov_long_complete, aes(x = idl_year, y = coverage, color = vaccine)) +
   geom_line(size = 1) +
   geom_point(size = 2, alpha = 0.7) +
   geom_text_repel(
@@ -86,8 +86,8 @@ p_cov_dob <- ggplot(df_cov_long_complete, aes(x = birth_year, y = coverage, colo
   scale_color_viridis_d(option = "turbo") +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
   scale_x_continuous(breaks = seq(
-    min(df_cov_long$birth_year, na.rm = TRUE),
-    max(df_cov_long$birth_year, na.rm = TRUE), 1
+    min(df_cov_long$idl_year, na.rm = TRUE),
+    max(df_cov_long$idl_year, na.rm = TRUE), 1
   )) +
   labs(
     title = "Vaccine Coverage by Birth Year",
@@ -142,8 +142,8 @@ p_timelines <- ggplot(df_long_age, aes(x = vaccine, y = age_months)) +
 
 # 📝 Section 4: Inequities & Associations
 df_region <- df_all %>%
-  mutate(birth_year = lubridate::year(`Tanggal Lahir Anak`)) %>%
-  group_by(Kecamatan, birth_year) %>% # assumes a column `region`
+  mutate(idl_year = as.integer(IDL_year)) %>%
+  group_by(Kecamatan, idl_year) %>% # assumes a column `region`
   summarise(
     across(all_of(vaccine_order),
       ~ mean(!is.na(.), na.rm = TRUE) * 100,
@@ -160,30 +160,30 @@ df_long_region <- df_region %>%
   )
 
 # CHECK ==========>>>>>>>>
-p_cov_region <- ggplot(df_long_region, aes(x = birth_year, y = coverage, color = Kecamatan)) +
+p_cov_region <- ggplot(df_long_region, aes(x = idl_year, y = coverage, color = Kecamatan)) +
   geom_line() +
   facet_wrap(~vaccine) +
-  labs(title = "Vaccine Coverage by Region", y = "% Coverage", x = "Birth Year") +
+  labs(title = "Vaccine Coverage by Region", y = "% Coverage", x = "IDL Year") +
   theme_pubclean()
 
 # 📝 Section 6: Full Immunization Coverage
 df_all <- df_all %>%
-  mutate(
-    FIC = ifelse(rowSums(is.na(select(., all_of(required_vaccines)))) == 0, 1, 0)
-  )
+  mutate(FIC = ifelse(rowSums(is.na(select(
+    ., all_of(required_vaccines)
+  ))) == 0, 1, 0))
 
 fic_rate <- mean(df_all$FIC, na.rm = TRUE) * 100
 fic_rate
 
 df_fic_year <- df_all %>%
-  mutate(birth_year = lubridate::year(`Tanggal Lahir Anak`)) %>%
-  group_by(birth_year) %>%
+  mutate(idl_year = lubridate::year(`Tanggal Lahir Anak`)) %>%
+  group_by(idl_year) %>%
   summarise(
     FIC_rate = mean(FIC, na.rm = TRUE) * 100,
     n = n()
   )
 
-p_fic_line <- ggplot(df_fic_year, aes(x = birth_year, y = FIC_rate)) +
+p_fic_line <- ggplot(df_fic_year, aes(x = idl_year, y = FIC_rate)) +
   geom_line(color = "darkgreen", linewidth = 1.2) +
   geom_point(size = 2) +
   theme_pubclean() +
@@ -198,7 +198,7 @@ df_fic_region <- df_all %>%
   arrange(desc(FIC_rate))
 
 p_fic_region <- ggplot(df_fic_region, aes(
-  x = reorder(Kecamatan, FIC_rate), y = FIC_rate, fill = Kecamatan
+  x = reorder(Kecamatan, desc(FIC_rate)), y = FIC_rate, fill = Kecamatan
 )) +
   geom_col(show.legend = FALSE) +
   geom_text(
@@ -226,7 +226,7 @@ df_count <- df_all %>%
   mutate(prop = n / sum(n) * 100)
 
 p_dist_vac <- ggplot(df_count, aes(x = factor(vaccine_count), y = prop)) +
-  geom_col(fill = "steelblue", width = 0.7) +
+  geom_col(fill = "green3", width = 0.7) +
   geom_text(
     aes(
       label = paste0(sprintf("%.2f%%", prop), " (n=", n, ")"),
@@ -293,6 +293,14 @@ age_table <- make_vaccine_age_table(
 ## $by_group, $by_idl, $by_dose
 age_plots <- plot_vaccine_age(age_table)
 
+df_trend <- df_all %>%
+  mutate(idl_year = as.integer(IDL_year)) %>%
+  filter(!is.na(idl_year)) %>%
+  group_by(idl_year, idl_status) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(idl_year) %>%
+  mutate(percent = n / sum(n) * 100)
+
 p_idl_trend <- ggplot(
   trend_data(df_all),
   aes(x = year_birth, y = percent, fill = idl_status)
@@ -337,11 +345,15 @@ p_dropoff <- ggplot(
   scale_fill_manual(
     values = c(
       "Completion" = "#1f77b4", # blue
-      "Dropoff"    = "#FFC107" # yellow
+      "Dropoff" = "#FFC107" # yellow
+    ),
+    labels = c(
+      "Completion" = "Completion",
+      "Dropoff" = "Drop-out"
     )
   ) +
   labs(
-    title = "Vaccine Completion vs Drop-off",
+    title = "Vaccine Completion vs Drop-out",
     x = NULL,
     y = "Percentage (%)"
   ) +

@@ -47,12 +47,6 @@ p_miss <- vis_miss(df_all %>% select(any_of(vaccine_order))) +
 # )
 # summary(model)
 
-p_cov_region_2 <- ggplot(df_long_region, aes(x = Kecamatan, y = coverage, fill = Kecamatan)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~vaccine) +
-  coord_flip() +
-  theme_pubclean()
-
 
 # Plot -----
 source(here("scripts/abes/plot.R"))
