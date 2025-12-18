@@ -2,7 +2,8 @@
 library(viridis)
 coverage_summary <- df_all %>%
   summarise(
-    across(all_of(vaccine_order),
+    across(
+      all_of(vaccine_order),
       list(
         coverage_rate = ~ mean(!is.na(.), na.rm = TRUE) * 100,
         n = ~ sum(!is.na(.))
@@ -26,7 +27,8 @@ p_coverage <- ggplot(coverage_summary, aes(x = vaccine, y = coverage_rate)) +
       label = paste0(sprintf("%.1f", coverage_rate), "% (n=", n, ")"),
       hjust = ifelse(coverage_rate > 10, 1.1, -0.1)
     ),
-    color = "black", size = 3
+    color = "black",
+    size = 3
   ) +
   coord_flip(clip = "off") +
   labs(
@@ -72,7 +74,10 @@ df_labels <- df_cov_long_complete %>%
   ungroup()
 
 library(ggrepel)
-p_cov_dob <- ggplot(df_cov_long_complete, aes(x = idl_year, y = coverage, color = vaccine)) +
+p_cov_dob <- ggplot(
+  df_cov_long_complete,
+  aes(x = idl_year, y = coverage, color = vaccine)
+) +
   geom_line(size = 1) +
   geom_point(size = 2, alpha = 0.7) +
   geom_text_repel(
@@ -85,10 +90,13 @@ p_cov_dob <- ggplot(df_cov_long_complete, aes(x = idl_year, y = coverage, color 
   ) +
   scale_color_viridis_d(option = "turbo") +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  scale_x_continuous(breaks = seq(
-    min(df_cov_long$idl_year, na.rm = TRUE),
-    max(df_cov_long$idl_year, na.rm = TRUE), 1
-  )) +
+  scale_x_continuous(
+    breaks = seq(
+      min(df_cov_long$idl_year, na.rm = TRUE),
+      max(df_cov_long$idl_year, na.rm = TRUE),
+      1
+    )
+  ) +
   labs(
     title = "Vaccine Coverage by Birth Year",
     subtitle = "",
@@ -110,13 +118,15 @@ p_cov_dob <- ggplot(df_cov_long_complete, aes(x = idl_year, y = coverage, color 
 
 # 📝 Section 3: Timeliness of Vaccination
 df_timeliness <- df_all %>%
-  mutate(across(all_of(vaccine_order),
+  mutate(across(
+    all_of(vaccine_order),
     ~ as.numeric(difftime(., `Tanggal Lahir Anak`, units = "days")) / 30.44,
     .names = "{.col}_age"
   ))
 
 df_timeliness %>%
-  summarise(across(ends_with("_age"),
+  summarise(across(
+    ends_with("_age"),
     ~ quantile(., probs = c(0.25, 0.5, 0.75), na.rm = TRUE),
     .names = "{.col}_{.fn}"
   ))
@@ -145,7 +155,8 @@ df_region <- df_all %>%
   mutate(idl_year = as.integer(IDL_year)) %>%
   group_by(Kecamatan, idl_year) %>% # assumes a column `region`
   summarise(
-    across(all_of(vaccine_order),
+    across(
+      all_of(vaccine_order),
       ~ mean(!is.na(.), na.rm = TRUE) * 100,
       .names = "{.col}_cov"
     ),
@@ -153,14 +164,21 @@ df_region <- df_all %>%
   )
 
 df_long_region <- df_region %>%
-  pivot_longer(ends_with("_cov"), names_to = "vaccine", values_to = "coverage") %>%
+  pivot_longer(
+    ends_with("_cov"),
+    names_to = "vaccine",
+    values_to = "coverage"
+  ) %>%
   mutate(
     vaccine = gsub("_cov$", "", vaccine),
     vaccine = factor(vaccine, levels = vaccine_order)
   )
 
 # CHECK ==========>>>>>>>>
-p_cov_region <- ggplot(df_long_region, aes(x = idl_year, y = coverage, color = Kecamatan)) +
+p_cov_region <- ggplot(
+  df_long_region,
+  aes(x = idl_year, y = coverage, color = Kecamatan)
+) +
   geom_line() +
   facet_wrap(~vaccine) +
   labs(title = "Vaccine Coverage by Region", y = "% Coverage", x = "IDL Year") +
@@ -168,9 +186,17 @@ p_cov_region <- ggplot(df_long_region, aes(x = idl_year, y = coverage, color = K
 
 # 📝 Section 6: Full Immunization Coverage
 df_all <- df_all %>%
-  mutate(FIC = ifelse(rowSums(is.na(select(
-    ., all_of(required_vaccines)
-  ))) == 0, 1, 0))
+  mutate(
+    FIC = ifelse(
+      rowSums(is.na(select(
+        .,
+        all_of(required_vaccines)
+      ))) ==
+        0,
+      1,
+      0
+    )
+  )
 
 fic_rate <- mean(df_all$FIC, na.rm = TRUE) * 100
 fic_rate
@@ -189,7 +215,8 @@ p_fic_line <- ggplot(df_fic_year, aes(x = idl_year, y = FIC_rate)) +
   theme_pubclean() +
   labs(
     title = "Full Immunization Coverage Over Time",
-    y = "% Fully Immunized Children", x = "Birth Year"
+    y = "% Fully Immunized Children",
+    x = "Birth Year"
   )
 
 df_fic_region <- df_all %>%
@@ -197,16 +224,22 @@ df_fic_region <- df_all %>%
   summarise(FIC_rate = mean(FIC, na.rm = TRUE) * 100, n = n()) %>%
   arrange(desc(FIC_rate))
 
-p_fic_region <- ggplot(df_fic_region, aes(
-  x = reorder(Kecamatan, desc(FIC_rate)), y = FIC_rate, fill = Kecamatan
-)) +
+p_fic_region <- ggplot(
+  df_fic_region,
+  aes(
+    x = reorder(Kecamatan, desc(FIC_rate)),
+    y = FIC_rate,
+    fill = Kecamatan
+  )
+) +
   geom_col(show.legend = FALSE) +
   geom_text(
     aes(
       label = paste0(sprintf("%.2f%%", FIC_rate), " (n=", n, ")"),
       hjust = ifelse(FIC_rate > 3, 1.1, -0.1)
     ),
-    color = "black", size = 3.5
+    color = "black",
+    size = 3.5
   ) +
   coord_flip(clip = "off") + # allow labels outside bars
   theme_minimal() +
@@ -258,7 +291,8 @@ df_missed <- df_all %>%
   group_by(Kecamatan) %>%
   summarise(
     avg_vaccine_count = mean(vaccine_count, na.rm = TRUE),
-    missed_opportunities = mean(FIC == 0 & vaccine_count > 0, na.rm = TRUE) * 100,
+    missed_opportunities = mean(FIC == 0 & vaccine_count > 0, na.rm = TRUE) *
+      100,
     n = n()
   )
 
@@ -270,7 +304,10 @@ df_long_completion <- df_all %>%
     vaccine = factor(vaccine, levels = vaccine_order)
   )
 
-p_heatmap <- ggplot(df_long_completion, aes(x = vaccine, y = Kecamatan, fill = factor(status))) +
+p_heatmap <- ggplot(
+  df_long_completion,
+  aes(x = vaccine, y = Kecamatan, fill = factor(status))
+) +
   geom_tile(color = "white") +
   scale_fill_manual(
     values = c("0" = "lightgrey", "1" = "darkgreen"),
@@ -279,15 +316,20 @@ p_heatmap <- ggplot(df_long_completion, aes(x = vaccine, y = Kecamatan, fill = f
   theme_pubclean() +
   labs(
     title = "Heatmap of Vaccine Completion by Region",
-    x = "Vaccine", y = "Region"
+    x = "Vaccine",
+    y = "Region"
   )
 
 idl <- make_idl_completion_summary(
-  df_all, required_vaccines, "dob"
+  df_all,
+  required_vaccines,
+  "dob"
 )
 
 age_table <- make_vaccine_age_table(
-  df_all, vaccine_groups, "dob"
+  df_all,
+  vaccine_groups,
+  "dob"
 )
 
 ## $by_group, $by_idl, $by_dose
@@ -311,7 +353,8 @@ p_idl_trend <- ggplot(
       label = paste0(round(percent, 1), "%\n(n=", n, ")"),
       vjust = ifelse(percent > 10, 1.1, -0.1)
     ),
-    color = "black", size = 3
+    color = "black",
+    size = 3
   ) +
   scale_y_continuous(
     labels = scales::percent_format(scale = 1),

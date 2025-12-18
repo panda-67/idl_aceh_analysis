@@ -24,7 +24,8 @@ plot_vaccine_age <- function(vax_table) {
       age_months = as.numeric(age_months),
       dose_name = factor(
         dose_name,
-        levels = as.character(unlist(vaccine_groups)), ordered = TRUE
+        levels = as.character(unlist(vaccine_groups)),
+        ordered = TRUE
       )
     )
 
@@ -66,7 +67,6 @@ plot_vaccine_age <- function(vax_table) {
     ) +
     theme_pubclean() +
     theme(text = element_text(family = "Times", size = 10))
-
 
   ## 2️⃣ Facet by dose_name (no sum)
   p_dose <- ggplot(df_long, aes(x = age_months, y = count)) +

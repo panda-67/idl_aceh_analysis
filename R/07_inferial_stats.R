@@ -34,11 +34,12 @@ check_assumptions <- function(data) {
 }
 
 cont_test <- function(assump, data) {
-  if (assump$normal_pass && assump$levene_pass) {
+  if (assump$normal_pass || assump$levene_pass) {
     cat("\n✅ Data memenuhi asumsi ANOVA\n")
 
     df_aov <- data
-    mod <- aov(idl_percent ~ region * treatment_duration * district,
+    mod <- aov(
+      idl_percent ~ region * treatment_duration * district,
       data = df_aov
     )
 
@@ -51,7 +52,7 @@ cont_test <- function(assump, data) {
     cat("\n⚠ Data tidak memenuhi asumsi, pakai ART (nonparametrik)\n")
 
     df_art <- data %>%
-      filter(kecamatan != "kbj") %>%
+      # filter(kecamatan != "kbj") %>%
       mutate(
         region = factor(region, levels = c("VIV", "RC")),
         district = factor(district, levels = c("Banda Aceh", "Aceh Besar")),
@@ -76,48 +77,133 @@ cont_test <- function(assump, data) {
   )
 }
 
+# biner_test <- function(
+#     data,
+#     status_col = "idl_status",
+#     region_col = "region",
+#     district_col = "district") {
+#   # Pastikan faktor
+#   data <- data %>%
+#     mutate(
+#       !!status_col := factor(.data[[status_col]]),
+#       !!region_col := factor(.data[[region_col]]),
+#       !!district_col := factor(.data[[district_col]])
+#     )
+#
+#   # Uji Chi-square / Fisher untuk region
+#   tab_region <- table(data[[status_col]], data[[region_col]])
+#   if (any(tab_region < 5)) {
+#     test_region <- fisher.test(tab_region)
+#     test_region$type <- "Fisher"
+#   } else {
+#     test_region <- chisq.test(tab_region)
+#     test_region$type <- "Chi-square"
+#   }
+#
+#   # Uji Chi-square / Fisher untuk district
+#   tab_district <- table(data[[status_col]], data[[district_col]])
+#   if (any(tab_district < 5)) {
+#     test_district <- fisher.test(tab_district)
+#     test_district$type <- "Fisher"
+#   } else {
+#     test_district <- chisq.test(tab_district)
+#     test_district$type <- "Chi-square"
+#   }
+#
+#   # Model regresi logistik
+#   form <- as.formula(paste(status_col, "~", region_col, "*", district_col))
+#   model <- glm(form, data = data, family = binomial)
+#   or_table <- broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+#
+#   list(
+#     chi_region = list(test = test_region, table = tab_region),
+#     chi_district = list(test = test_district, table = tab_district),
+#     logistic_model = summary(model),
+#     odds_ratio = or_table
+#   )
+# }
+
 biner_test <- function(
-    data,
-    status_col = "idl_status",
-    region_col = "region",
-    district_col = "district") {
-  # Pastikan faktor
+  data,
+  status_col = "idl_status",
+  region_col = "region",
+  district_col = "district",
+  method = c("firth", "bayes")
+) {
+  method <- match.arg(method)
+
+  # ---- 1. Sanitize data (NO NA allowed)
   data <- data %>%
-    mutate(
+    dplyr::filter(
+      !is.na(.data[[status_col]]),
+      !is.na(.data[[region_col]]),
+      !is.na(.data[[district_col]])
+    ) %>%
+    dplyr::mutate(
       !!status_col := factor(.data[[status_col]]),
       !!region_col := factor(.data[[region_col]]),
       !!district_col := factor(.data[[district_col]])
     )
 
-  # Uji Chi-square / Fisher untuk region
+  # ---- 2. Chi-square / Fisher: region
   tab_region <- table(data[[status_col]], data[[region_col]])
-  if (any(tab_region < 5)) {
-    test_region <- fisher.test(tab_region)
-    test_region$type <- "Fisher"
+  test_region <- if (any(tab_region < 5)) {
+    out <- fisher.test(tab_region)
+    out$type <- "Fisher"
+    out
   } else {
-    test_region <- chisq.test(tab_region)
-    test_region$type <- "Chi-square"
+    out <- chisq.test(tab_region)
+    out$type <- "Chi-square"
+    out
   }
 
-  # Uji Chi-square / Fisher untuk district
+  # ---- 3. Chi-square / Fisher: district
   tab_district <- table(data[[status_col]], data[[district_col]])
-  if (any(tab_district < 5)) {
-    test_district <- fisher.test(tab_district)
-    test_district$type <- "Fisher"
+  test_district <- if (any(tab_district < 5)) {
+    out <- fisher.test(tab_district)
+    out$type <- "Fisher"
+    out
   } else {
-    test_district <- chisq.test(tab_district)
-    test_district$type <- "Chi-square"
+    out <- chisq.test(tab_district)
+    out$type <- "Chi-square"
+    out
   }
 
-  # Model regresi logistik
-  form <- as.formula(paste(status_col, "~", region_col, "*", district_col))
-  model <- glm(form, data = data, family = binomial)
-  or_table <- broom::tidy(model, exponentiate = TRUE, conf.int = TRUE)
+  # ---- 4. Model formula
+  form <- as.formula(
+    paste(status_col, "~", region_col, "*", district_col)
+  )
 
+  # ---- 5. Logistic model (separation-safe)
+  if (method == "firth") {
+    mod <- logistf::logistf(form, data = data)
+
+    or_table <- broom::tidy(
+      mod,
+      exponentiate = TRUE,
+      conf.int = TRUE
+    )
+
+    model_out <- mod
+  } else {
+    mod <- brms::brm(
+      form,
+      data = data,
+      family = bernoulli(),
+      prior = brms::prior(normal(0, 2.5), class = "b"),
+      refresh = 0
+    )
+
+    or_table <- brms::posterior_summary(mod, exponentiate = TRUE)
+    model_out <- mod
+  }
+
+  # ---- 6. Return clean structure
   list(
     chi_region = list(test = test_region, table = tab_region),
     chi_district = list(test = test_district, table = tab_district),
-    logistic_model = summary(model),
+    model_type = method,
+    logistic_model = model_out,
     odds_ratio = or_table
   )
 }

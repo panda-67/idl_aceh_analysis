@@ -12,16 +12,28 @@ source(here("R/variables.R"))
 
 files <- list.files(
   "/home/arba/CodeLabs/data/drive_xl/output/",
-  pattern = "\\.xlsx$|\\.ods$", full.names = TRUE
+  pattern = "\\.xlsx$|\\.ods$",
+  full.names = TRUE
 )
 
 selected_cols <- c(
-  "nama anak", "tgl lahir", "jenis kelamin",
+  "nama anak",
+  "tgl lahir",
+  "jenis kelamin",
   # as.character(unlist(vaccine_groups)),
   vaccine_order,
-  "HB0_doses", "BCG_doses", "OPV_doses", "IPV_doses",
-  "DTP_doses", "MR_doses", "PCV_doses", "RV_doses",
-  "Kecamatan", "IDL_year", "idl_percent", "idl_status"
+  "HB0_doses",
+  "BCG_doses",
+  "OPV_doses",
+  "IPV_doses",
+  "DTP_doses",
+  "MR_doses",
+  "PCV_doses",
+  "RV_doses",
+  "Kecamatan",
+  "IDL_year",
+  "idl_percent",
+  "idl_status"
 )
 
 df_all <- read_and_parse_files(
@@ -36,8 +48,10 @@ df_all <- read_and_parse_files(
     `Tanggal Lahir Anak` = `tgl lahir`,
     `Nama Anak` = `nama anak`
   ) %>%
-  mutate(dob = if_else(
-    is.na(`Tanggal Lahir Anak`) & !is.na(`HB-0`),
-    as.Date(`HB-0`),
-    as.Date(`Tanggal Lahir Anak`)
-  ))
+  mutate(
+    dob = if_else(
+      is.na(`Tanggal Lahir Anak`) & !is.na(`HB-0`),
+      as.Date(`HB-0`),
+      as.Date(`Tanggal Lahir Anak`)
+    )
+  )

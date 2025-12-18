@@ -1,6 +1,19 @@
 required <- c(
-  "readODS", "googlesheets4", "dplyr", "tidyr", "purrr", "here", "ggplot2",
-  "ggpubr", "lmerTest", "lme4", "ARTool"
+  "readODS",
+  "readxl",
+  # "logistf",
+  "googlesheets4",
+  "dplyr",
+  "tidyr",
+  "purrr",
+  "here",
+  "ggplot2",
+  "ggpubr",
+  "lmerTest",
+  "lme4",
+  "ARTool",
+  "lubridate",
+  "rmarkdown"
 )
 
 lapply(required, function(pkg) {

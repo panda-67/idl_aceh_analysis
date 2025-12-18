@@ -14,7 +14,8 @@ make_idl_completion_summary <- function(data, intend_cols, dob_col = "dob") {
       span_months = as.integer(span_days / 30.44),
       span_cross_year = lubridate::year(
         first_date
-      ) != lubridate::year(last_date),
+      ) !=
+        lubridate::year(last_date),
       age_months_completion = as.integer(
         lubridate::interval(.data[[dob_col]], last_date) %/% months(1)
       ),
@@ -55,14 +56,16 @@ make_vaccine_age_table <- function(data, intend_cols, dob_col = "dob") {
     mutate(
       vaccine_group = purrr::map_chr(dose_name, function(dose) {
         grp <- names(intend_cols)[purrr::map_lgl(
-          intend_cols, ~ any(dose %in% .x)
+          intend_cols,
+          ~ any(dose %in% .x)
         )]
         grp[1]
       }),
       age_months = interval(.data[[dob_col]], date_given) %/% months(1),
       dose_name = factor(
         dose_name,
-        levels = as.character(unlist(vaccine_groups)), ordered = TRUE
+        levels = as.character(unlist(vaccine_groups)),
+        ordered = TRUE
       )
     ) %>%
     filter(age_months <= 60) %>%
@@ -75,9 +78,13 @@ make_vaccine_age_table <- function(data, intend_cols, dob_col = "dob") {
 
   # Build month columns sorted numerically
   month_cols <- as.character(sort(
-    suppressWarnings(as.numeric(setdiff(names(df), c(
-      "vaccine_group", "dose_name"
-    ))))
+    suppressWarnings(as.numeric(setdiff(
+      names(df),
+      c(
+        "vaccine_group",
+        "dose_name"
+      )
+    )))
   ))
 
   # Return with sorted columns

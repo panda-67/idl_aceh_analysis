@@ -3,7 +3,15 @@
 source(here::here("scripts/pre_analysis.R"))
 
 names(all_data)
-all_data <- all_data %>% filter(kecamatan != "kbj")
+all_data <- all_data %>%
+  filter(
+    !kecamatan %in%
+      c(
+        "krueng_barona_jaya",
+        "montasik",
+        "darul_imarah"
+      )
+  )
 
 # 1. Descriptive Analysis
 idl <- make_idl_completion_summary(all_data, required_vaccines)
@@ -21,7 +29,9 @@ stat_cont <- cont_test(assump, all_data)
 # ===>>> 2.2 Binary <<<===
 stat_biner <- biner_test(
   all_data,
-  status_col = "idl_status", region_col = "region", district_col = "district"
+  status_col = "idl_status",
+  region_col = "region",
+  district_col = "district"
 )
 
 # ===>>> 2.3 Chi Square <<<===
@@ -37,4 +47,4 @@ source(here("scripts/post_analysis.R"))
 
 # ---
 # ---
-source(here::here("scripts/abes.R"))
+# source(here::here("scripts/abes.R"))

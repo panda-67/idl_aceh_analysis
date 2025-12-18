@@ -1,13 +1,13 @@
 extra_dates <- "Tanggal Lahir Anak"
 
 sheets <- list(
-  jaya_baru       = "Copy of Jaya Baru (verified)",
-  baiturrahman    = "Copy of Baiturrahman (verified)",
-  darussalam      = "Copy of Darussalam (verified)",
-  mesjid_raya     = "Copy of Mesjid Raya (verified)",
-  meuraxa         = "Copy of Meuraxa (verified)",
-  kuta_malaka     = "Copy of Kuta Malaka (verified)",
-  kbj             = "Copy of KBJ (Verified)"
+  jaya_baru = "Copy of Jaya Baru (verified)",
+  baiturrahman = "Copy of Baiturrahman (verified)",
+  darussalam = "Copy of Darussalam (verified)",
+  mesjid_raya = "Copy of Mesjid Raya (verified)",
+  meuraxa = "Copy of Meuraxa (verified)",
+  kuta_malaka = "Copy of Kuta Malaka (verified)",
+  kbj = "Copy of KBJ (Verified)"
 )
 
 # JE => "JE"
@@ -16,7 +16,10 @@ vaccine_groups <- list(
   BCG = "BCG",
   OPV = c("OPV 1", "OPV 2", "OPV 3", "OPV 4"),
   DTP = c(
-    "DTP-HB-Hib 1", "DTP-HB-Hib 2", "DTP-HB-Hib 3", "DTP-HB-Hib 4"
+    "DTP-HB-Hib 1",
+    "DTP-HB-Hib 2",
+    "DTP-HB-Hib 3",
+    "DTP-HB-Hib 4"
   ),
   MR = c("MR 1", "MR 2"),
   IPV = c("IPV 1", "IPV 2"),
@@ -25,24 +28,62 @@ vaccine_groups <- list(
 )
 
 vaccine_order <- c(
-  "HB-0", "BCG", "OPV 1", "DTP-HB-Hib 1", "OPV 2", "PCV 1", "RV 1",
-  "DTP-HB-Hib 2", "OPV 3", "PCV 2", "RV 2", "DTP-HB-Hib 3", "OPV 4", "PCV 3",
-  "RV 3", "MR 1", "IPV 1", "IPV 2", "DTP-HB-Hib 4", "MR 2"
+  "HB-0",
+  "BCG",
+  "OPV 1",
+  "DTP-HB-Hib 1",
+  "OPV 2",
+  "PCV 1",
+  "RV 1",
+  "DTP-HB-Hib 2",
+  "OPV 3",
+  "PCV 2",
+  "RV 2",
+  "DTP-HB-Hib 3",
+  "OPV 4",
+  "PCV 3",
+  "RV 3",
+  "MR 1",
+  "IPV 1",
+  "IPV 2",
+  "DTP-HB-Hib 4",
+  "MR 2"
 )
 
 required_vaccines <- c(
-  "HB-0", "BCG", "OPV 1", "DTP-HB-Hib 1", "OPV 2",
-  "DTP-HB-Hib 2", "OPV 3", "DTP-HB-Hib 3", "OPV 4",
-  "MR 1", "IPV 1"
+  "HB-0",
+  "BCG",
+  "OPV 1",
+  "DTP-HB-Hib 1",
+  "OPV 2",
+  "DTP-HB-Hib 2",
+  "OPV 3",
+  "DTP-HB-Hib 3",
+  "OPV 4",
+  "MR 1",
+  "IPV 1"
 )
 
 required_cols <- c(
-  "Nama Anak", "Kecamatan", "dob",
+  "Nama Anak",
+  "Kecamatan",
+  "dob",
   as.character(unlist(vaccine_groups)),
-  "HB0_doses", "BCG_doses", "OPV_doses", "IPV_doses",
-  "DTP_doses", "MR_doses", "PCV_doses", "RV_doses",
-  "region", "district", "treatment_duration", "kecamatan",
-  "IDL_year", "idl_percent", "idl_status"
+  "HB0_doses",
+  "BCG_doses",
+  "OPV_doses",
+  "IPV_doses",
+  "DTP_doses",
+  "MR_doses",
+  "PCV_doses",
+  "RV_doses",
+  "region",
+  "district",
+  "treatment_duration",
+  "kecamatan",
+  "IDL_year",
+  "idl_percent",
+  "idl_status"
 )
 
 region_data <- tibble(
@@ -53,7 +94,7 @@ region_data <- tibble(
     "meuraxa", # 4
     "kuta_malaka", # 5
     "darussalam", # 6
-    "kbj", # 7
+    "krueng_barona_jaya", # 7
     "kuta_raja", # 8
     "peukan_bada", # 9
     "jaya_baru", # 10
@@ -87,24 +128,24 @@ region_data <- tibble(
     "banda_aceh" # banda_raya
   ),
   treatment_group = c(
-    "RC_one_year", # montasik
-    "RC_one_year", # kuta_alam
-    "RC_one_year", # lueng_bata
-    "RC_two_year", # meuraxa
-    "RC_two_year", # kuta_malaka
-    "RC_two_year", # darussalam
-    "VIV_one_year", # kbj
-    "VIV_one_year", # kuta_raja
-    "VIV_one_year", # peukan_bada
-    "VIV_two_year", # jaya_baru
-    "VIV_two_year", # baiturrahman
-    "VIV_two_year", # mesjid_raya
-    "control", # darul_imarah
-    "control", # darul_kamal
-    "control", # blang_bintang
-    "control", # syiah_kuala
-    "control", # ulee_kareng
-    "control" # banda_raya
+    "RC_one_year", # montasik       aceh_besar
+    "RC_one_year", # kuta_alam            banda_aceh
+    "RC_one_year", # lueng_bata     banda_aceh
+    "RC_two_year", # meuraxa        banda_aceh
+    "RC_two_year", # kuta_malaka    aceh_besar
+    "RC_two_year", # darussalam     aceh_besar
+    "VIV_one_year", # kbj                 aceh_besar
+    "VIV_one_year", # kuta_raja           banda_aceh
+    "VIV_one_year", # peukan_bada   aceh_besar
+    "VIV_two_year", # jaya_baru     banda_aceh
+    "VIV_two_year", # baiturrahman  banda_aceh
+    "VIV_two_year", # mesjid_raya   aceh_besar
+    "control", # darul_imarah       aceh_besar
+    "control", # darul_kamal              aceh_besar
+    "control", # blang_bintang            aceh_besar
+    "control", # syiah_kuala              banda_aceh
+    "control", # ulee_kareng              banda_aceh
+    "control" # banda_raya                banda_aceh
   )
 )
 

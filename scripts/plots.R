@@ -5,8 +5,10 @@ p_idl_trend <- ggplot(
   aes(x = year_birth, y = percent, fill = idl_status)
 ) +
   geom_col(position = position_dodge()) +
-  geom_text(aes(label = paste0(round(percent, 1), "%\n(n=", n, ")")),
-    vjust = -0.5, size = 3
+  geom_text(
+    aes(label = paste0(round(percent, 1), "%\n(n=", n, ")")),
+    vjust = -0.5,
+    size = 3
   ) +
   # geom_hline(yintercept = 90, linetype = "dashed", color = "red") +
   # annotate("text",
@@ -45,7 +47,7 @@ p_dropoff <- ggplot(
   scale_fill_manual(
     values = c(
       "Completion" = "#1f77b4", # blue
-      "Dropoff"    = "#d62728" # red
+      "Dropoff" = "#d62728" # red
     )
   ) +
   labs(
@@ -63,21 +65,26 @@ p_chi_sq <- ggplot(
   chi_sq_data(all_data, chi_test),
   aes(
     x = reorder(VaccineGroup, Proportion),
-    y = Proportion, fill = Status
+    y = Proportion,
+    fill = Status
   )
 ) +
   geom_col(position = position_dodge()) +
-  geom_text(aes(label = paste0(round(Proportion, 1), "%\n(n=", Count, ")")),
-    vjust = -0.5, size = 3
+  geom_text(
+    aes(label = paste0(round(Proportion, 1), "%\n(n=", Count, ")")),
+    vjust = -0.5,
+    size = 3
   ) +
   scale_y_continuous(
     labels = scales::percent_format(scale = 1),
     limits = c(0, 100)
   ) +
-  scale_fill_manual(values = c(
-    "Completed" = "#4CAF50",
-    "Missed" = "#FFC107"
-  )) +
+  scale_fill_manual(
+    values = c(
+      "Completed" = "#4CAF50",
+      "Missed" = "#FFC107"
+    )
+  ) +
   labs(
     title = "Proportion of Children per Vaccine Group",
     x = "Vaccine Group",

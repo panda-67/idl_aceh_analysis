@@ -1,17 +1,15 @@
 # Compute IDL percent, status, and year
 idl_metrics <- function(df, required_vaccines) {
-  library(dplyr)
-
   df <- df %>%
     mutate(
-      idl_percent = (
-        (HB0_doses >= 1) +
-          (BCG_doses >= 1) +
-          (OPV_doses >= 4) +
-          (IPV_doses >= 1) +
-          (DTP_doses >= 3) +
-          (MR_doses >= 1)
-      ) / 6 * 100,
+      idl_percent = ((HB0_doses >= 1) +
+        (BCG_doses >= 1) +
+        (OPV_doses >= 4) +
+        (IPV_doses >= 1) +
+        (DTP_doses >= 3) +
+        (MR_doses >= 1)) /
+        6 *
+        100,
       idl_status = case_when(
         idl_percent == 100 ~ "Lengkap",
         TRUE ~ "Tidak"

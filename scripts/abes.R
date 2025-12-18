@@ -21,7 +21,9 @@ df_all %>%
   )
 
 df_all %>%
-  mutate(OPV_count = rowSums(!is.na(select(., `OPV 1`, `OPV 2`, `OPV 3`, `OPV 4`)))) %>%
+  mutate(
+    OPV_count = rowSums(!is.na(select(., `OPV 1`, `OPV 2`, `OPV 3`, `OPV 4`)))
+  ) %>%
   summarise(
     mismatch = sum(OPV_count != OPV_doses, na.rm = TRUE),
     total = n()
@@ -46,7 +48,6 @@ p_miss <- vis_miss(df_all %>% select(any_of(vaccine_order))) +
 #   data = df_all, family = binomial
 # )
 # summary(model)
-
 
 # Plot -----
 source(here("scripts/abes/plot.R"))

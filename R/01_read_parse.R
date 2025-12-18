@@ -1,58 +1,60 @@
-library(readODS)
-library(googlesheets4)
-library(dplyr)
-library(purrr)
-
-read_and_parse <- function(path, sheets, vaccine_groups, extra_dates = NULL) {
-  # 0. Google Sheet Id
-  sheet_id <- "1DpZUSfL5eouUMygS25cqNmRvcFvgh4y1wEunqS3uTxk"
-  # 1. What columns we’ll attempt to parse
+read_and_parse <- function(path, vaccine_groups, extra_dates = NULL) {
   all_date_cols <- unique(c(unlist(vaccine_groups), extra_dates))
-  # 2. A regex for dd/mm/YYYY
   date_pattern <- "^\\s*\\d{1,2}/\\d{1,2}/\\d{4}\\s*$"
-  # 3. Relevant year of vaccined
+
   min_allowed_date <- as.Date("2017-01-01")
   max_allowed_date <- as.Date("2024-12-31")
 
-  ## main function
-  map_dfr(
-    .x = names(sheets),
-    .f = function(kec) {
-      # df <- read_sheet(sheet_id, sheet = sheets[[kec]])
-      df <- read_ods(path, sheet = sheets[[kec]])
+  sheets <- readxl::excel_sheets(path)
 
-      # only try to parse cols that actually exist
+  map_dfr(
+    sheets,
+    function(sh) {
+      df <- readxl::read_excel(
+        path,
+        sheet = sh,
+        col_types = "text"
+      )
+
+      # drop column G (7)
+      if (ncol(df) >= 7) {
+        df <- df[, -7]
+      }
+
+      # keep only A–AB (28 columns), 27 (minus G)
+      df <- df[, seq_len(min(27, ncol(df)))]
+
       target_cols <- intersect(all_date_cols, names(df))
 
       for (col in target_cols) {
         vec <- df[[col]]
-
-        if (is.factor(vec)) vec <- as.character(vec)
-
-        parsed_vec <- rep(as.Date(NA), length(vec))
-
-        if (is.character(vec)) {
-          vec <- trimws(vec)
-          vec <- gsub("^\\?", "", vec)
-
-          ok <- grepl(date_pattern, vec)
-          possible_dates <-
-            suppressWarnings(as.Date(vec[ok], format = "%d/%m/%Y"))
-
-          # Check for valid and <= 2025-12-31
-          valid <- !is.na(possible_dates) & possible_dates >= min_allowed_date &
-            possible_dates <= max_allowed_date
-          parsed_vec[which(ok)[valid]] <- possible_dates[valid]
+        if (is.factor(vec)) {
+          vec <- as.character(vec)
         }
 
-        df[[col]] <- parsed_vec
+        parsed <- as.Date(NA)[seq_along(vec)]
+
+        if (is.character(vec)) {
+          vec <- trimws(gsub("^\\?", "", vec))
+          ok <- grepl(date_pattern, vec)
+
+          dates <- suppressWarnings(
+            as.Date(vec[ok], format = "%d/%m/%Y")
+          )
+
+          valid <- !is.na(dates) &
+            dates >= min_allowed_date &
+            dates <= max_allowed_date
+
+          parsed[which(ok)[valid]] <- dates[valid]
+        }
+
+        df[[col]] <- parsed
       }
 
-      df$kecamatan <- kec
-
+      df$sheet <- sh
       df
-    },
-    .id = "sheet"
+    }
   )
 }
 
@@ -89,7 +91,9 @@ read_and_parse_files <- function(paths, vaccine_groups, extra_dates = NULL) {
       for (col in target_cols) {
         vec <- df[[col]]
 
-        if (is.factor(vec)) vec <- as.character(vec)
+        if (is.factor(vec)) {
+          vec <- as.character(vec)
+        }
 
         parsed_vec <- rep(as.Date(NA), length(vec))
 

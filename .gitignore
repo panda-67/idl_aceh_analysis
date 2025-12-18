@@ -1,3 +1,83 @@
 .RData
 .Rhistory
-.Rproj.user
+.Ruserdata
+.Rproj.user/
+.Rapp.history
+
+# Auto-generated RStudio files
+# *.Rproj
+*.Rproj.user
+.Rproj.user/
+
+# Packages installed locally
+.Rlibs/
+.Renviron
+.Rprofile
+.Rsettings
+
+# Packrat / renv
+packrat/
+renv/library/
+renv/staging/
+renv/python/
+renv/sandbox/
+renv/activate.R
+
+# Targets / drake
+_targets/
+.cache/
+
+# Markdown artifacts
+*.utf8.md
+*.knit.md
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+
+# Compiled code
+*.o
+*.so
+*.dll
+
+# Reports / knitted output
+*.html
+*.pdf
+*.docx
+
+# Data dumps (keep raw only)
+*.rds
+*.RData
+*.csv
+*.xlsx
+
+# Unless you keep them in /data/raw
+!/data/raw/
+
+# Output dirs
+output/
+reports/
+figures/
+cache/
+
+# Quarto / Rmd intermediates
+*_files/
+*_cache/
+
+# Python venv (if used)
+venv/
+.env/
+.idea/
+
+# OS-specific trash
+Thumbs.db
+desktop.ini
+
+Data/*
+Models/*
+Reports/*
+

@@ -13,13 +13,22 @@ source(here("R/07_inferial_stats.R"))
 
 # 2. Source config
 source(here("R/variables.R"))
-path <- here("data", "dataset.ods")
+path <- here("data", "dataset.xlsx")
+
+to_snake <- function(x) {
+  x |>
+    tolower() |>
+    gsub("[^a-z0-9]+", "_", x = _) |>
+    gsub("^_|_$", "", x = _)
+}
 
 # 3. Build all_data
 all_data <-
-  read_and_parse(path, sheets, vaccine_groups, extra_dates) %>%
+  read_and_parse(path, vaccine_groups, extra_dates) %>%
   count_doses(vaccine_groups) %>%
   idl_metrics(required_vaccines) %>%
+  mutate(kecamatan = to_snake(Kecamatan)) %>%
+  fill(kecamatan, .direction = "downup") %>%
   mutate(
     region = case_when(
       kecamatan %in% unlist(region_groups$RC) ~ "RC",
@@ -45,5 +54,5 @@ all_data <-
       as.Date(`Tanggal Lahir Anak`)
     )
   ) %>%
-  filter(as.Date(`HB-0`) >= as.Date(dob)) %>%
   select(any_of(required_cols))
+# filter(as.Date(`HB-0`) >= as.Date(dob))
